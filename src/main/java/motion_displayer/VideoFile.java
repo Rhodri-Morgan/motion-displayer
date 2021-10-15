@@ -9,30 +9,23 @@ import org.opencv.videoio.Videoio;
 
 public class VideoFile {
 
-    private VideoCapture video;
+    private VideoCapture video_capture;
+    private int block_width;
+    private int block_height;
     private LinkedList<Mat> frames;
 
-    public VideoFile(Path path) {
-        this.video = new VideoCapture(path.toString());
-        this.frames = new LinkedList<Mat>();
+    public VideoFile(Path path, int block_width, int block_height) {
+        this.video_capture = new VideoCapture(path.toString());
+        this.block_width = block_width;
+        this.block_height = block_height;
     }
 
-    /**
-     * Using path given to constructor extracts frames
-     * @return linked list representation where each link is a Mat frame
-     */
-    public LinkedList<Mat> getFrames() {
-        if (this.frames.toArray().length == 0) {
-            Mat frame = new Mat();
-            while (true) {
-                if (video.read(frame)) {
-                    this.frames.addLast(frame);
-                } else {
-                    break;
-                }
-            }
-        }
-        return this.frames;
+    public void setFrames(LinkedList<Mat> frames) {
+        this.frames = frames;
+    }
+
+    public VideoCapture getVideoCapture() {
+        return this.video_capture;
     }
 
     /**
@@ -40,7 +33,7 @@ public class VideoFile {
      * @return frame width of video
      */
     public int getFrameWidth() {
-        return (int) video.get(Videoio.CAP_PROP_FRAME_WIDTH);
+        return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_WIDTH);
     }
 
     /**
@@ -48,6 +41,6 @@ public class VideoFile {
      * @return frame height of video
      */
     public int getFrameHeight() {
-        return (int) video.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+        return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_HEIGHT);
     }
 }
