@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:26.0-jre'
+    implementation files('C:/opencv/build/java/opencv-453.jar')
+
+    testImplementation 'junit:junit:4.12'
+}
+
+mainClassName = 'motion_displayer.App'
