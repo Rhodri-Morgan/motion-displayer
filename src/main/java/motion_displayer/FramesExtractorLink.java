@@ -10,18 +10,18 @@ public class FramesExtractorLink implements VideoProcessorLink {
 
     @Override
     public void handle(VideoFile video) {
-        LinkedList<Mat> frames = new LinkedList<Mat>();
+        LinkedList<Frame> frames = new LinkedList<>();
         Mat frame = new Mat();
         while (true) {
             if (video.getVideoCapture().read(frame)) {
                 Mat temp_frame = new Mat();
                 frame.copyTo(temp_frame);
-                frames.addLast(temp_frame);
+                frames.addLast(new Frame(temp_frame));
             } else {
                 break;
             }
         }
-        video.setFrames(frames);
+        video.setUnmodifiedFrames(frames);
         if (this.next != null) {
             this.next.handle(video);
         }

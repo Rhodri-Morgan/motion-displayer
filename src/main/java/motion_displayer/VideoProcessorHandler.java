@@ -10,7 +10,8 @@ public class VideoProcessorHandler {
     }
 
     public void process() {
-        VideoProcessorLink extract_frames = new FramesExtractorLink();
-        extract_frames.handle(this.video);
+        VideoProcessorLink chain = new FramesExtractorLink();
+        chain.addLink(new BlockSegmenterLink());
+        chain.handle(this.video);
     }
 }

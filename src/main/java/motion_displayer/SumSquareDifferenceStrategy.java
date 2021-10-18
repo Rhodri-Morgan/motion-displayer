@@ -1,5 +1,6 @@
 package motion_displayer;
 
+
 public class SumSquareDifferenceStrategy implements FrameMatchingStrategy {
 
     @Override
