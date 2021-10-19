@@ -10,19 +10,15 @@ import org.opencv.videoio.Videoio;
 public class VideoFile {
 
     private VideoCapture video_capture;
-    private int block_width;
-    private int block_height;
-    private int search_width;
-    private int search_height;
+    private int block_size;
+    private int search_size;
     private LinkedList<Mat> unmodified_frames;
     private LinkedList<Mat> modified_frames;
 
-    public VideoFile(Path path, int block_width, int block_height, int search_width, int search_height) {
+    public VideoFile(Path path, int block_size, int search_size) {
         this.video_capture = new VideoCapture(path.toString());
-        this.block_width = block_width;
-        this.block_height = block_height;
-        this.search_width = search_width;
-        this.search_height = search_height;
+        this.block_size = block_size;
+        this.search_size = search_size;
     }
 
     public void setUnmodifiedFrames(LinkedList<Mat> unmodified_frames) {
@@ -45,20 +41,12 @@ public class VideoFile {
         return this.modified_frames;
     }
 
-    public int getBlockWidth() {
-        return this.block_width;
+    public int getBlockSize() {
+        return this.block_size;
     }
 
-    public int getBlockHeight() {
-        return this.block_height;
-    }
-
-    public int getSearchWidth() {
-        return this.search_width;
-    }
-
-    public int getSearchHeight() {
-        return this.search_height;
+    public int getSearchSize() {
+        return this.search_size;
     }
 
     public int getFrameWidth() {
@@ -68,4 +56,9 @@ public class VideoFile {
     public int getFrameHeight() {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_HEIGHT);
     }
+
+    public int getFrameCount() {
+        return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_COUNT);
+    }
+
 }
