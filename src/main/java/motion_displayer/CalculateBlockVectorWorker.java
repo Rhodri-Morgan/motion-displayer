@@ -1,65 +1,100 @@
 package motion_displayer;
 
-import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import org.opencv.core.CvException;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 
 public class CalculateBlockVectorWorker implements Runnable {
 
-    private Integer block_id;
-    private Map<Integer, Mat> modified_blocks;
+    private final double text_size_ratio = 0.02;
+    private VideoFile video;
+    private ReentrantLock lock_modified_frame;
     private FrameMatchingStrategy frame_matching_strategy;
+    private Mat modified_frame;
     private Mat frame;
-    private Mat next_frame;
+    private Mat previous_frame;
     private int x;
     private int y;
-    private int search_size;
-    private int block_size;
 
-    public CalculateBlockVectorWorker(Integer block_id,
-                                      Map<Integer, Mat> modified_blocks,
+    public CalculateBlockVectorWorker(VideoFile video,
+                                      ReentrantLock lock_modified_frame,
                                       FrameMatchingStrategy frame_matching_strategy,
+                                      Mat modified_frame,
                                       Mat frame,
-                                      Mat next_frame,
+                                      Mat previous_frame,
                                       int x,
-                                      int y,
-                                      int search_size,
-                                      int block_size) {
-        this.block_id = block_id;
-        this.modified_blocks = modified_blocks;
+                                      int y) {
+        this.video = video;
+        this.lock_modified_frame = lock_modified_frame;
         this.frame_matching_strategy = frame_matching_strategy;
+        this.modified_frame = modified_frame;
         this.frame = frame;
-        this.next_frame = next_frame;
+        this.previous_frame = previous_frame;
         this.x = x;
         this.y = y;
-        this.search_size = search_size;
-        this.block_size = block_size;
     }
 
     @Override
     public void run() {
-        Rect block_roi = new Rect(this.x, this.y, this.block_size, this.block_size);
-        Mat block = new Mat(this.frame, block_roi);
-        int shift_search = (int) ((double) this.search_size / 2);
-        int center_search_x = this.x + shift_search;
-        int center_search_y = this.y + shift_search;
-        for (int i=0; i<this.search_size; i++) {
-            for (int j=0; j<this.search_size; j++) {
+        Rect search_area_roi = new Rect(this.x, this.y, this.video.getSearchSize(), this.video.getSearchSize());
+        Mat search_area = new Mat(this.frame, search_area_roi);
+        Mat previous_search_area = new Mat(this.previous_frame, search_area_roi);
+        int center_block_modifier = (int) ((double) (this.video.getSearchSize() - this.video.getBlockSize()) / 2);
+        Mat center_block = new Mat(search_area, new Rect(center_block_modifier, center_block_modifier, this.video.getBlockSize(), this.video.getBlockSize()));
+        Double matching_metric = null;
+        int matching_x = 0;
+        int matching_y = 0;
+        for (int search_y=0; search_y<this.video.getSearchSize()-this.video.getBlockSize(); search_y++) {
+            for (int search_x=0; search_x<this.video.getSearchSize()-this.video.getBlockSize(); search_x++) {
                 try {
-                    int search_x = center_search_x - shift_search;
-                    int search_y = center_search_y - shift_search;
-                    Rect search_roi = new Rect(search_x, search_y, this.block_size, this.block_size);
-                    Mat search_block = new Mat(this.next_frame, search_roi);
-                    double metric = this.frame_matching_strategy.match(block, this.x, this.y, search_block, search_x, search_y);
+                    Rect previous_search_roi = new Rect(search_x, search_y, this.video.getBlockSize(), this.video.getBlockSize());
+                    Mat previous_search_block = new Mat(previous_search_area, previous_search_roi);
+                    Double metric = this.frame_matching_strategy.match(center_block,
+                                                                       this.x+center_block_modifier,
+                                                                       this.y+center_block_modifier,
+                                                                       previous_search_block,
+                                                                       this.x+search_x,
+                                                                       this.y+search_y);
+                    if (matching_metric == null || metric < matching_metric) {
+                        matching_metric = metric;
+                        matching_x = this.x+search_x;
+                        matching_y = this.y+search_y;
+                    }
                 } catch (CvException e) {
                     // Pass
                 }
-                center_search_x += 1;
             }
-            center_search_y += 1;
         }
-        // this.modified_blocks.put(this.block_id, new Mat());      TODO Replace with actual modified block mat
+        Point start = new Point(this.x+center_block_modifier, this.y+center_block_modifier);
+        Point end = new Point(matching_x, matching_y);
+        this.lock_modified_frame.lock();
+        if (video.isDebug()) {
+            Imgproc.rectangle(this.modified_frame,
+                              new Rect(this.x, this.y, this.video.getSearchSize(), this.video.getSearchSize()),
+                              new Scalar(255, 255, 255),
+                              1);
+            Imgproc.putText(this.modified_frame,
+                            Math.round(matching_metric) + "",
+                            new Point(this.x, this.y+center_block_modifier),
+                            Imgproc.FONT_HERSHEY_PLAIN,
+                            text_size_ratio*video.getSearchSize(),
+                            new Scalar(255, 255, 255));
+        }
+        else if (matching_metric > video.getThreshold()) {
+            Imgproc.arrowedLine(this.modified_frame,
+                                start,
+                                end,
+                                new Scalar(255, 255, 255),
+                                1,
+                                Imgproc.LINE_8,
+                                0,
+                                0.5);
+        }
+        this.lock_modified_frame.unlock();
     }
 }

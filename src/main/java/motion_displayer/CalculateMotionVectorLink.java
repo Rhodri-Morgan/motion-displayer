@@ -1,18 +1,17 @@
 package motion_displayer;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
 import org.opencv.core.Mat;
-import org.opencv.core.Rect;
+import org.opencv.highgui.HighGui;
 
 
 public class CalculateMotionVectorLink implements VideoProcessorLink {
 
     private final int max_threads = Runtime.getRuntime().availableProcessors() * 4;
-    private List<Thread> workers = new ArrayList<Thread>();
+    private List<Thread> workers = new ArrayList<>();
     private VideoProcessorLink next;
 
     private void clearFinishedThreads() {
@@ -35,51 +34,49 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
         System.out.println("--- Calculating Motion Vectors ---");
         LinkedList<Mat> unmodified_frames = video.getUnmodifiedFrames();
         LinkedList<Mat> modified_frames = new LinkedList<>();
-        int processed_frame_count = 0;
+        ReentrantLock lock_modified_frames = new ReentrantLock();
         Mat frame = null;
-        Mat next_frame;
+        Mat previous_frame = null;
         while (unmodified_frames.size() != 0) {
-            if (frame == null) {
-                frame = unmodified_frames.pop();
-            }
-            next_frame = unmodified_frames.pop();
-            Map<Integer, Mat> modified_blocks = new HashMap<Integer, Mat>();
+            frame = unmodified_frames.pop();
+            Mat modified_frame = new Mat();
+            frame.copyTo(modified_frame);
             int current_x = 0;
             int current_y = 0;
-            int block_id = 0;
-            while (true) {
-                if (current_x >= video.getFrameWidth() && current_y == video.getFrameHeight() - video.getBlockSize()) {
+            while (frame != null && previous_frame != null) {
+                if (current_y >= video.getFrameHeight()) {
                     while (this.workers.size() != 0) {
                         clearFinishedThreads();
                     }
-                    // TODO Merge blocks to now modified frame
+                    modified_frames.addLast(modified_frame);
+                    HighGui.imshow("Test", modified_frame);
+                    HighGui.waitKey();
                     break;
-                }
-                else if (current_x >= video.getFrameWidth()) {
+                } else if (current_x >= video.getFrameWidth()) {
                     current_x = 0;
-                    current_y += video.getBlockSize();
+                    current_y += video.getSearchSize();
                 } else {
                     if (this.workers.size() == this.max_threads) {
                         clearFinishedThreads();
-                    } else {
-                        Thread worker = new Thread(new CalculateBlockVectorWorker(block_id,
-                                                                                  modified_blocks,
-                                                                                  new SumSquareDifferenceStrategy(),
-                                                                                  frame,
-                                                                                  next_frame,
-                                                                                  current_x,
-                                                                                  current_y,
-                                                                                  video.getSearchSize(),
-                                                                                  video.getBlockSize()));
-                        worker.start();
-                        this.workers.add(worker);
                     }
-                    current_x += video.getBlockSize();
+                    Thread worker = new Thread(new CalculateBlockVectorWorker(video,
+                                                                              lock_modified_frames,
+                                                                              new MeanAbsoluteDifference(),
+                                                                              modified_frame,
+                                                                              frame,
+                                                                              previous_frame,
+                                                                              current_x,
+                                                                              current_y));
+                    worker.start();
+                    this.workers.add(worker);
+                    current_x += video.getSearchSize();
                 }
             }
-            frame = next_frame;
-            processed_frame_count += 1;
-            System.out.printf("\rProcessed Frame Count %d/%d", processed_frame_count, video.getFrameCount());
+            if (previous_frame == null) {
+                modified_frames.addLast(frame);
+            }
+            previous_frame = frame;
+            System.out.printf("\rProcessed Frame Count %d/%d", modified_frames.size(), video.getFrameCount());
         }
         System.out.print("\n");
         video.setModifiedFrames(modified_frames);

@@ -12,6 +12,7 @@ public class VideoProcessorHandler {
     public void process() {
         VideoProcessorLink chain = new FramesExtractorLink();
         chain.addLink(new CalculateMotionVectorLink());
+        chain.addLink(new VideoAssemblerLink());
         chain.handle(this.video);
     }
 }

@@ -26,7 +26,7 @@ public class SumSquareDifferenceStrategy implements FrameMatchingStrategy {
     }
 
     @Override
-    public double match(Mat block, int block_x, int block_y, Mat search_block, int search_x, int search_y) {
+    public Double match(Mat block, int block_x, int block_y, Mat search_block, int search_x, int search_y) {
         int block_sum_x = sumCount(block_x, block.width());
         int block_sum_y = sumCount(block_y, block.height());
         int block_sum_c = sumColour(block);
