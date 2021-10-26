@@ -1,0 +1,11 @@
+.root {
+    -fx-background-color: #0d1117;
+    -fx-font-family: Arial;
+    -fx-text-fill: #fff;
+}
+
+#github_link {
+    -fx-text-fill: #fff;
+    -fx-font-style: italic;
+    -fx-underline: true;
+}
