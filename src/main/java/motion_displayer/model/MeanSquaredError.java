@@ -1,4 +1,4 @@
-package motion_displayer;
+package motion_displayer.model;
 
 import org.opencv.core.Mat;
 

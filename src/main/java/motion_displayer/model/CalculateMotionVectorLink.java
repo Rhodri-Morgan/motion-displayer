@@ -1,12 +1,10 @@
-package motion_displayer;
+package motion_displayer.model;
 
-import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import org.opencv.core.Mat;
-import org.opencv.highgui.HighGui;
 
 
 public class CalculateMotionVectorLink implements VideoProcessorLink {

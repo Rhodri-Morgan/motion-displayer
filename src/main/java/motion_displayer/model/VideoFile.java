@@ -1,4 +1,4 @@
-package motion_displayer;
+package motion_displayer.model;
 
 import java.util.LinkedList;
 import java.nio.file.Path;
