@@ -18,7 +18,7 @@ public class FramesExtractorLink implements VideoProcessorLink {
                 Mat temp_frame = new Mat();
                 frame.copyTo(temp_frame);
                 frames.addLast(temp_frame);
-                System.out.printf("\rExtracted Frame Count %d/%d", frames.size(), video.getFrameCount());
+                System.out.printf("\rExtracted Frame Count %d", frames.size());
             } else {
                 break;
             }

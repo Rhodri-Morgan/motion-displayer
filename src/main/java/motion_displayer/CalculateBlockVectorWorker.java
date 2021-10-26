@@ -87,8 +87,8 @@ public class CalculateBlockVectorWorker implements Runnable {
         }
         else if (matching_metric > video.getThreshold()) {
             Imgproc.arrowedLine(this.modified_frame,
-                                start,
                                 end,
+                                start,
                                 new Scalar(255, 255, 255),
                                 1,
                                 Imgproc.LINE_8,

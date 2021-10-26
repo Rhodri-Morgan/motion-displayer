@@ -3,7 +3,7 @@ package motion_displayer;
 import org.opencv.core.Mat;
 
 
-public class MeanAbsoluteDifference implements FrameMatchingStrategy {
+public class MeanSquaredError implements FrameMatchingStrategy {
 
     private int sumColour(Mat area, int x, int y) {
         int rgb_summed_image = 0;
@@ -18,7 +18,7 @@ public class MeanAbsoluteDifference implements FrameMatchingStrategy {
         double total = 0;
         for (int y=0; y<block.height(); y++) {
             for (int x=0; x<block.width(); x++) {
-                total += Math.abs(sumColour(block, x, y) - sumColour(search_block, x, y));
+                total += Math.pow(sumColour(search_block, x, y) - sumColour(block, x, y), 2);
             }
         }
         return (total / Math.pow(block.width(), 2));

@@ -1,5 +1,6 @@
 package motion_displayer;
 
+import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,13 +35,18 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
         System.out.println("--- Calculating Motion Vectors ---");
         LinkedList<Mat> unmodified_frames = video.getUnmodifiedFrames();
         LinkedList<Mat> modified_frames = new LinkedList<>();
+        int target_frames = unmodified_frames.size();
         ReentrantLock lock_modified_frames = new ReentrantLock();
         Mat frame = null;
         Mat previous_frame = null;
-        while (unmodified_frames.size() != 0) {
-            frame = unmodified_frames.pop();
+        while (modified_frames.size() != target_frames) {
             Mat modified_frame = new Mat();
-            frame.copyTo(modified_frame);
+            try {
+                frame = unmodified_frames.pop();
+                frame.copyTo(modified_frame);
+            } catch (NullPointerException e) {
+                modified_frames.addLast(previous_frame);
+            }
             int current_x = 0;
             int current_y = 0;
             while (frame != null && previous_frame != null) {
@@ -49,8 +55,6 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
                         clearFinishedThreads();
                     }
                     modified_frames.addLast(modified_frame);
-                    HighGui.imshow("Test", modified_frame);
-                    HighGui.waitKey();
                     break;
                 } else if (current_x >= video.getFrameWidth()) {
                     current_x = 0;
@@ -76,7 +80,7 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
                 modified_frames.addLast(frame);
             }
             previous_frame = frame;
-            System.out.printf("\rProcessed Frame Count %d/%d", modified_frames.size(), video.getFrameCount());
+            System.out.printf("\rProcessed Frame Count %d/%d", modified_frames.size(), target_frames);
         }
         System.out.print("\n");
         video.setModifiedFrames(modified_frames);
