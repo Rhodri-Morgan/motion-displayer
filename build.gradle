@@ -20,4 +20,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-mainClassName = 'motion_displayer.App'
+mainClassName = 'motion_displayer.Main'
