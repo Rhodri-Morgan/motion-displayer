@@ -12,14 +12,14 @@ import org.opencv.imgproc.Imgproc;
 public class CalculateBlockVectorWorker implements Runnable {
 
     private final double text_size_ratio = 0.02;
-    private VideoFile video;
-    private ReentrantLock lock_modified_frame;
-    private FrameMatchingStrategy frame_matching_strategy;
-    private Mat modified_frame;
-    private Mat frame;
-    private Mat previous_frame;
-    private int x;
-    private int y;
+    private final VideoFile video;
+    private final ReentrantLock lock_modified_frame;
+    private final FrameMatchingStrategy frame_matching_strategy;
+    private final Mat modified_frame;
+    private final Mat frame;
+    private final Mat previous_frame;
+    private final int x;
+    private final int y;
 
     public CalculateBlockVectorWorker(VideoFile video,
                                       ReentrantLock lock_modified_frame,

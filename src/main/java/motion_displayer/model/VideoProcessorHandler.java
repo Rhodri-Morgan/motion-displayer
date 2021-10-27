@@ -3,7 +3,7 @@ package motion_displayer.model;
 
 public class VideoProcessorHandler {
 
-    private VideoFile video;
+    private final VideoFile video;
 
     public VideoProcessorHandler(VideoFile video) {
         this.video = video;
