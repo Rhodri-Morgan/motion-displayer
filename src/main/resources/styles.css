@@ -1,11 +1,33 @@
 .root {
     -fx-background-color: #0d1117;
+}
+
+.root * {
     -fx-font-family: Arial;
     -fx-text-fill: #fff;
+    -fx-effect: dropshadow(gaussian, #000, 2.5, 0, 0.8, 0.8);
+}
+
+.button {
+    -fx-background-color: #232b38;
+    -fx-label-padding: 5;
+}
+
+.button:hover {
+    -fx-background-color: #3a485e;
+    -fx-cursor: hand;
 }
 
 #github_link {
-    -fx-text-fill: #fff;
     -fx-font-style: italic;
     -fx-underline: true;
+}
+
+#find_file_button {
+    -fx-background-radius: 20;
+    -fx-font-size: 25;
+}
+
+#file_type_label {
+    -fx-font-size: 15;
 }

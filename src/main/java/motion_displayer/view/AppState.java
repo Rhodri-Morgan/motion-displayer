@@ -1,11 +1,12 @@
 package motion_displayer.view;
 
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 
 public interface AppState {
 
-    Pane getRoot();
+    StackPane getRoot();
 
-    void draw(AppStateContext context);
+    void draw(AppStateContext context, AnchorPane header);
 }

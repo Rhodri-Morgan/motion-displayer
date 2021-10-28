@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         HostServices host_services = getHostServices();
         Application.setUserAgentStylesheet(STYLESHEET_MODENA);
-        App window = new App(host_services, 1000, 800);
+        App window = new App(host_services, stage, 1000, 800);
         stage.setTitle("Motion Displayer");
         stage.setResizable(false);
         stage.setScene(window.getScene());
