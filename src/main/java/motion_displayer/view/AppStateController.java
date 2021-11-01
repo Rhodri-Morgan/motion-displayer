@@ -2,8 +2,7 @@ package motion_displayer.view;
 
 import java.nio.file.Paths;
 import javafx.application.HostServices;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
@@ -11,27 +10,33 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 
-public class AppStateContext {
+public class AppStateController {
 
     private final HostServices host_services;
     private final Stage stage;
+    private final StackPane root;
     private final Scene scene;
     private AppState state;
 
-    public AppStateContext(HostServices host_services, Stage stage, int width, int height) {
-        StackPane root = new StackPane();
+    public AppStateController(HostServices host_services, Stage stage, int width, int height) {
+        this.root = new StackPane();
         this.host_services = host_services;
         this.stage = stage;
         this.scene = new Scene(root, width, height);
         this.scene.getStylesheets().add(String.valueOf(this.getClass().getResource("/styles.css")));
-        this.setState(new ConfigureOptionsState(root, Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
+        this.setState(new ConfigureOptionsState(Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
     }
 
     public Stage getStage() {
         return this.stage;
+    }
+
+    public StackPane getRoot() {
+        return this.root;
     }
 
     public Scene getScene() {
@@ -44,7 +49,7 @@ public class AppStateContext {
     }
 
     private void draw() {
-        this.state.getRoot().getChildren().clear();
+        this.root.getChildren().clear();
         AnchorPane header = new AnchorPane();
         header.setId("header");
         Image github_image = new Image(String.valueOf(this.getClass().getClassLoader().getResource("github_logo_white.png")));
@@ -68,7 +73,7 @@ public class AppStateContext {
         AnchorPane.setTopAnchor(github_link, 18.0);
         AnchorPane.setRightAnchor(github_link, 45.0);
         header.getChildren().addAll(github_image_view, github_link);
-        this.state.getRoot().getChildren().add(header);
+        this.root.getChildren().add(header);
         this.state.draw(this);
     }
 }

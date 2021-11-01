@@ -6,10 +6,10 @@ import javafx.event.EventHandler;
 
 public class BackButtonHandler implements EventHandler<ActionEvent> {
 
-    private final AppStateContext context;
+    private final AppStateController context;
     private final AppState next_state;
 
-    public BackButtonHandler(AppStateContext context, AppState next_state) {
+    public BackButtonHandler(AppStateController context, AppState next_state) {
         this.context = context;
         this.next_state = next_state;
     }

@@ -1,7 +1,10 @@
 package motion_displayer.model;
 
 import javafx.scene.image.Image;
-import org.opencv.core.*;
+import org.opencv.core.MatOfByte;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
