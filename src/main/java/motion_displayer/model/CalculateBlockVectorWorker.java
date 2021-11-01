@@ -44,7 +44,7 @@ public class CalculateBlockVectorWorker implements Runnable {
         Rect search_area_roi = new Rect(this.x, this.y, this.video.getSearchSize(), this.video.getSearchSize());
         Mat search_area = new Mat(this.frame, search_area_roi);
         Mat previous_search_area = new Mat(this.previous_frame, search_area_roi);
-        int center_block_modifier = (int) ((double) (this.video.getSearchSize() - this.video.getBlockSize()) / 2);
+        int center_block_modifier = (int) Math.floor((double) (this.video.getSearchSize() - this.video.getBlockSize()) / 2);
         Mat center_block = new Mat(search_area, new Rect(center_block_modifier, center_block_modifier, this.video.getBlockSize(), this.video.getBlockSize()));
         Double matching_metric = null;
         int matching_x = 0;
@@ -70,25 +70,13 @@ public class CalculateBlockVectorWorker implements Runnable {
                 }
             }
         }
-        Point start = new Point(this.x+center_block_modifier, this.y+center_block_modifier);
-        Point end = new Point(matching_x, matching_y);
+        Point start = new Point(matching_x, matching_y);
+        Point end = new Point(this.x+center_block_modifier, this.y+center_block_modifier);
         this.lock_modified_frame.lock();
-        if (video.isDebug()) {
-            Imgproc.rectangle(this.modified_frame,
-                              new Rect(this.x, this.y, this.video.getSearchSize(), this.video.getSearchSize()),
-                              new Scalar(255, 255, 255),
-                              1);
-            Imgproc.putText(this.modified_frame,
-                            Math.round(matching_metric) + "",
-                            new Point(this.x, this.y+center_block_modifier),
-                            Imgproc.FONT_HERSHEY_PLAIN,
-                            text_size_ratio*video.getSearchSize(),
-                            new Scalar(255, 255, 255));
-        }
-        else if (matching_metric > video.getThreshold()) {
+        if (matching_metric != null) {
             Imgproc.arrowedLine(this.modified_frame,
-                                end,
                                 start,
+                                end,
                                 new Scalar(255, 255, 255),
                                 1,
                                 Imgproc.LINE_8,

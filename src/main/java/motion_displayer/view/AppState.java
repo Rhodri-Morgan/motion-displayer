@@ -8,5 +8,5 @@ public interface AppState {
 
     StackPane getRoot();
 
-    void draw(AppStateContext context, AnchorPane header);
+    void draw(AppStateContext context);
 }

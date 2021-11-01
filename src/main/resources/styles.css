@@ -31,3 +31,18 @@
 #file_type_label {
     -fx-font-size: 15;
 }
+
+#divider {
+    -fx-stroke: #fff;
+    -fx-stroke-width: 1;
+}
+
+.slider .axis {
+    -fx-font-size: 10;
+    -fx-tick-label-fill: #fff;
+}
+
+.controls_suggested_label {
+    -fx-font-size: 10;
+    -fx-font-style: italic;
+}
