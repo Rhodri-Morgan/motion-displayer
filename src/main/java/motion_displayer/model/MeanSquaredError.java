@@ -3,15 +3,7 @@ package motion_displayer.model;
 import org.opencv.core.Mat;
 
 
-public class MeanSquaredError implements FrameMatchingStrategy {
-
-    private int sumColour(Mat area, int x, int y) {
-        int rgb_summed_image = 0;
-        for (double rgb : area.get(x, y)) {
-            rgb_summed_image += (int) rgb;
-        }
-        return rgb_summed_image;
-    }
+public class MeanSquaredError extends FrameMatchingStrategy {
 
     @Override
     public Double match(Mat block, int block_x, int block_y, Mat search_block, int search_x, int search_y) {

@@ -16,7 +16,6 @@ public class VideoFile {
     private final Mat thumbnail_clean;
     private final DecorateThumbnail decorate_thumbnail;
     private final String out_path;
-    private final CalculateMacroBlockSizes suggested_sizes;
     private int search_size;
     private int block_size;
     private LinkedList<Mat> unmodified_frames;
@@ -25,9 +24,8 @@ public class VideoFile {
 
     public VideoFile(Path in_path, Scalar arrow_colour) {
         this.video_capture = new VideoCapture(in_path.toString());
-        this.suggested_sizes = new CalculateMacroBlockSizes(this.getFrameWidth(), this.getFrameHeight());
-        this.search_size = this.suggested_sizes.getSuggestedSearchSize();
-        this.block_size = this.suggested_sizes.getSuggestedBlockSize();
+        this.search_size = this.getSuggestedSearchSize();
+        this.block_size = this.getSuggestedBlockSize();
         this.arrow_colour = arrow_colour;
         this.thumbnail_clean = new Mat();
         VideoCapture temp_capture = new VideoCapture(in_path.toString());
@@ -89,15 +87,15 @@ public class VideoFile {
     }
 
     public int getSuggestedSearchSize() {
-        return this.suggested_sizes.getSuggestedSearchSize();
+        return 16;
     }
 
     public int getMinSearchSize() {
-        return 20;
+        return 10;
     }
 
     public int getMaxSearchSize() {
-        return 80;
+        return 60;
     }
 
     public int getBlockSize() {
@@ -105,7 +103,7 @@ public class VideoFile {
     }
 
     public int getSuggestedBlockSize() {
-        return this.suggested_sizes.getSuggestedBlockSize();
+        return 7;
     }
 
     public int getMinBlockSize() {

@@ -40,10 +40,17 @@ public class CalculateBlockVectorWorker implements Runnable {
     @Override
     public void run() {
         Rect search_area_roi = new Rect(this.x, this.y, this.video.getSearchSize(), this.video.getSearchSize());
-        Mat search_area = new Mat(this.frame, search_area_roi);
-        Mat previous_search_area = new Mat(this.previous_frame, search_area_roi);
         int center_block_modifier = (int) Math.floor((double) (this.video.getSearchSize() - this.video.getBlockSize()) / 2);
-        Mat center_block = new Mat(search_area, new Rect(center_block_modifier, center_block_modifier, this.video.getBlockSize(), this.video.getBlockSize()));
+        Mat search_area;
+        Mat previous_search_area;
+        Mat center_block;
+        try {
+            search_area = new Mat(this.frame, search_area_roi);
+            previous_search_area = new Mat(this.previous_frame, search_area_roi);
+            center_block = new Mat(search_area, new Rect(center_block_modifier, center_block_modifier, this.video.getBlockSize(), this.video.getBlockSize()));
+        } catch (CvException e) {
+            return;
+        }
         Double matching_metric = null;
         int matching_x = 0;
         int matching_y = 0;

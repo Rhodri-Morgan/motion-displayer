@@ -1,5 +1,6 @@
 package motion_displayer;
 
+
 import motion_displayer.view.AppStateController;
 import java.nio.file.Path;
 import java.nio.file.Paths;
