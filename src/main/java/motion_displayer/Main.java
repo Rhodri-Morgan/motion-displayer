@@ -1,11 +1,11 @@
 package motion_displayer;
 
-import javafx.application.HostServices;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import motion_displayer.view.AppStateController;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.application.Application;
+import javafx.application.HostServices;
+import javafx.stage.Stage;
 
 
 public class Main extends Application {

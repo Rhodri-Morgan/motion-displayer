@@ -3,17 +3,15 @@ package motion_displayer.model;
 import java.util.LinkedList;
 import java.nio.file.Paths;
 import java.nio.file.Path;
-import javafx.scene.image.Image;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
+import javafx.scene.image.Image;
 
 
 public class VideoFile {
 
-    private final int  min_search_size = 20;
-    private final int max_search_size = 80;
     private final VideoCapture video_capture;
     private final Mat thumbnail_clean;
     private final DecorateThumbnail decorate_thumbnail;
@@ -23,12 +21,14 @@ public class VideoFile {
     private int block_size;
     private LinkedList<Mat> unmodified_frames;
     private LinkedList<Mat> modified_frames;
+    private Scalar arrow_colour;
 
-    public VideoFile(Path in_path) {
+    public VideoFile(Path in_path, Scalar arrow_colour) {
         this.video_capture = new VideoCapture(in_path.toString());
         this.suggested_sizes = new CalculateMacroBlockSizes(this.getFrameWidth(), this.getFrameHeight());
         this.search_size = this.suggested_sizes.getSuggestedSearchSize();
         this.block_size = this.suggested_sizes.getSuggestedBlockSize();
+        this.arrow_colour = arrow_colour;
         this.thumbnail_clean = new Mat();
         VideoCapture temp_capture = new VideoCapture(in_path.toString());
         temp_capture.read(this.thumbnail_clean);
@@ -55,12 +55,21 @@ public class VideoFile {
         this.block_size = block_size;
     }
 
+    public void setArrowColour(Scalar arrow_colour) {
+        this.arrow_colour = arrow_colour;
+    }
+
     public VideoCapture getVideoCapture() {
         return this.video_capture;
     }
 
-    public Image getThumbnail() {
-       return this.decorate_thumbnail.process(this.thumbnail_clean.clone(), new Scalar(255, 255, 255), this.search_size, this.block_size);
+    public Image getThumbnail(boolean print_macro_blocks, boolean print_arrows) {
+       return this.decorate_thumbnail.process(this.thumbnail_clean.clone(),
+                                              print_macro_blocks,
+                                              print_arrows,
+                                              this.arrow_colour,
+                                              this.search_size,
+                                              this.block_size);
     }
 
     public String getOutPath() {
@@ -84,11 +93,11 @@ public class VideoFile {
     }
 
     public int getMinSearchSize() {
-        return this.min_search_size;
+        return 20;
     }
 
     public int getMaxSearchSize() {
-        return this.max_search_size;
+        return 80;
     }
 
     public int getBlockSize() {
@@ -100,11 +109,23 @@ public class VideoFile {
     }
 
     public int getMinBlockSize() {
-        return (int) Math.round(this.search_size*0.25);
+        int min_block_size = (int) Math.round(this.search_size*0.25);
+        if (min_block_size % 2 != 0) {
+            min_block_size -= 1;
+        }
+        return min_block_size;
     }
 
     public int getMaxBlockSize() {
-        return (int) Math.round(this.search_size*0.75);
+        int max_block_size = (int) Math.round(this.search_size*0.75);
+        if (max_block_size % 2 != 0) {
+            max_block_size += 1;
+        }
+        return max_block_size;
+    }
+
+    public Scalar getArrowColour() {
+        return this.arrow_colour;
     }
 
     public int getFrameWidth() {

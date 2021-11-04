@@ -5,13 +5,11 @@ import org.opencv.core.CvException;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 
 public class CalculateBlockVectorWorker implements Runnable {
 
-    private final double text_size_ratio = 0.02;
     private final VideoFile video;
     private final ReentrantLock lock_modified_frame;
     private final FrameMatchingStrategy frame_matching_strategy;
@@ -77,7 +75,7 @@ public class CalculateBlockVectorWorker implements Runnable {
             Imgproc.arrowedLine(this.modified_frame,
                                 start,
                                 end,
-                                new Scalar(255, 255, 255),
+                                this.video.getArrowColour(),
                                 1,
                                 Imgproc.LINE_8,
                                 0,

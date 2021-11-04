@@ -10,8 +10,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.StackPane;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 
 public class AppStateController {
@@ -20,12 +18,16 @@ public class AppStateController {
     private final Stage stage;
     private final StackPane root;
     private final Scene scene;
+    private final int width;
+    private final int height;
     private AppState state;
 
     public AppStateController(HostServices host_services, Stage stage, int width, int height) {
         this.root = new StackPane();
         this.host_services = host_services;
         this.stage = stage;
+        this.width = width;
+        this.height = height;
         this.scene = new Scene(root, width, height);
         this.scene.getStylesheets().add(String.valueOf(this.getClass().getResource("/styles.css")));
         this.setState(new ConfigureOptionsState(Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
@@ -41,6 +43,14 @@ public class AppStateController {
 
     public Scene getScene() {
         return this.scene;
+    }
+
+    public int getScreenWidth() {
+        return this.width;
+    }
+
+    public int getScreenHeight() {
+        return this.height;
     }
 
     public void setState(AppState state) {
@@ -64,11 +74,8 @@ public class AppStateController {
         github_link.setId("github_link");
         github_link.setText("GitHub.com/Rhodri-Morgan/Motion-Displayer");
         github_link.setBorder(Border.EMPTY);
-        github_link.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
+        github_link.setOnAction(e -> {
                 host_services.showDocument(link);
-            }
         });
         AnchorPane.setTopAnchor(github_link, 18.0);
         AnchorPane.setRightAnchor(github_link, 45.0);
