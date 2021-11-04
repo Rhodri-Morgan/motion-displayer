@@ -6,7 +6,6 @@ import org.opencv.core.Scalar;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,25 +16,16 @@ import javafx.geometry.Rectangle2D;
 import javafx.beans.binding.Bindings;
 
 
-public class ConfigureOptionsState implements AppState {
+public class ConfigureOptionsState extends AppState {
 
-    private final VideoFile video;
     private final Color default_arrows_colour = Color.BLACK;
-    private AppStateController context;
+    private final VideoFile video;
 
-    public ConfigureOptionsState(Path file_path){
+    public ConfigureOptionsState(AppStateController context, Path file_path){
+        super(context);
         this.video = new VideoFile(file_path, new Scalar(this.default_arrows_colour.getBlue(),
                                                          this.default_arrows_colour.getGreen(),
                                                          this.default_arrows_colour.getRed()));
-    }
-
-    private void drawBackButton() {
-        AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
-        Button back_button = new Button("\uD83E\uDC60 Back");
-        back_button.setOnAction(new BackButtonHandler(this.context, new OpenFileState()));
-        AnchorPane.setTopAnchor(back_button, 10.0);
-        AnchorPane.setLeftAnchor(back_button, 10.0);
-        header.getChildren().add(back_button);
     }
 
     private void drawThumbnail() {
@@ -43,13 +33,13 @@ public class ConfigureOptionsState implements AppState {
         boolean print_arrows = true;
         Rectangle2D crop = null;
         try {
-            print_macro_blocks = ((CheckBox) this.context.getScene().lookup("#macro_blocks_toggle")).isSelected();
-            print_arrows = ((CheckBox) this.context.getScene().lookup("#vectors_toggle")).isSelected();
-            ImageView thumbnail_view = (ImageView) this.context.getScene().lookup("#thumbnail_view");
-            Button reset_zoom = (Button) this.context.getScene().lookup("#reset_zoom");
+            print_macro_blocks = ((CheckBox) super.getContext().getScene().lookup("#macro_blocks_toggle")).isSelected();
+            print_arrows = ((CheckBox) super.getContext().getScene().lookup("#vectors_toggle")).isSelected();
+            ImageView thumbnail_view = (ImageView) super.getContext().getScene().lookup("#thumbnail_view");
+            Button reset_zoom = (Button) super.getContext().getScene().lookup("#reset_zoom");
             crop = thumbnail_view.getViewport();
-            this.context.getRoot().getChildren().remove(thumbnail_view);
-            this.context.getRoot().getChildren().remove(reset_zoom);
+            super.getContext().getRoot().getChildren().remove(thumbnail_view);
+            super.getContext().getRoot().getChildren().remove(reset_zoom);
         }
         catch (NullPointerException e) {
             // Pass
@@ -67,14 +57,14 @@ public class ConfigureOptionsState implements AppState {
         if (crop != null) {
             thumbnail_view.setViewport(crop);
         }
-        ImageZoomHandler image_zoom_handler = new ImageZoomHandler(this.context, thumbnail_view, reset_zoom, crop != null);
+        ImageZoomHandler image_zoom_handler = new ImageZoomHandler(super.getContext(), thumbnail_view, reset_zoom, crop != null);
         image_zoom_handler.enableZoomFunctionality();
-        double thumbnail_width = this.context.getRoot().getWidth() - 60.0;
+        double thumbnail_width = super.getContext().getRoot().getWidth() - 60.0;
         double thumbnail_height = thumbnail_width / (16.0 / 9.0);
         thumbnail_view.setFitWidth(thumbnail_width);
         thumbnail_view.setFitHeight(thumbnail_height);
         thumbnail_view.setTranslateY(-70.0);
-        this.context.getRoot().getChildren().addAll(thumbnail_view, reset_zoom);
+        super.getContext().getRoot().getChildren().addAll(thumbnail_view, reset_zoom);
     }
 
     private void drawThumbnailToggles() {
@@ -95,16 +85,16 @@ public class ConfigureOptionsState implements AppState {
         vectors_toggle.selectedProperty().addListener(e -> {
             this.drawThumbnail();
         });
-        this.context.getRoot().getChildren().addAll(macro_blocks_toggle, vectors_toggle);
+        super.getContext().getRoot().getChildren().addAll(macro_blocks_toggle, vectors_toggle);
     }
 
     private void drawDivider() {
         Line divider = new Line();
         divider.setId("divider");
         divider.setStartX(0);
-        divider.setEndX(this.context.getRoot().getWidth()-30.0);
+        divider.setEndX(super.getContext().getRoot().getWidth()-30.0);
         divider.setTranslateY(245.0);
-        this.context.getRoot().getChildren().add(divider);
+        super.getContext().getRoot().getChildren().add(divider);
     }
 
     private void drawSliderControls() {
@@ -134,7 +124,7 @@ public class ConfigureOptionsState implements AppState {
         block_length_value.getStyleClass().add("slider_value");
         block_length_value.setTranslateX(210.0);
         block_length_value.setTranslateY(350.0);
-        this.context.getRoot().getChildren().addAll(block_length_label, block_length_slider, block_length_value);
+        super.getContext().getRoot().getChildren().addAll(block_length_label, block_length_slider, block_length_value);
         Label search_length_label = new Label("Search Area Side Length:");
         search_length_label.setTranslateX(-400.0);
         search_length_label.setTranslateY(285.0);
@@ -163,7 +153,7 @@ public class ConfigureOptionsState implements AppState {
         search_length_value.getStyleClass().add("slider_value");
         search_length_value.setTranslateX(210.0);
         search_length_value.setTranslateY(285.0);
-        this.context.getRoot().getChildren().addAll(search_length_label, search_length_slider, search_length_value);
+        super.getContext().getRoot().getChildren().addAll(search_length_label, search_length_slider, search_length_value);
     }
 
     private void drawBeginControls() {
@@ -175,8 +165,8 @@ public class ConfigureOptionsState implements AppState {
         suggested_button.setTranslateX(360.0);
         suggested_button.setTranslateY(328.0);
         suggested_button.setOnAction(e -> {
-            Slider block_length_slider = (Slider) context.getScene().lookup("#block_length_slider");
-            Slider search_length_slider = (Slider) context.getScene().lookup("#search_length_slider");
+            Slider block_length_slider = (Slider) super.getContext().getScene().lookup("#block_length_slider");
+            Slider search_length_slider = (Slider) super.getContext().getScene().lookup("#search_length_slider");
             this.video.setBlockSize(this.video.getSuggestedBlockSize());
             this.video.setSearchSize(this.video.getSuggestedSearchSize());
             block_length_slider.setMin(this.video.getMinBlockSize());
@@ -197,12 +187,11 @@ public class ConfigureOptionsState implements AppState {
             this.video.setArrowColour(new Scalar(255*vector_colour.getBlue(), 255*vector_colour.getGreen(), 255*vector_colour.getRed()));
             this.drawThumbnail();
         });
-        this.context.getRoot().getChildren().addAll(begin_button, suggested_button, vector_colour_label, vector_colour_picker);
+        super.getContext().getRoot().getChildren().addAll(begin_button, suggested_button, vector_colour_label, vector_colour_picker);
     }
 
     @Override
-    public void draw(AppStateController context) {
-        this.context = context;
+    public void draw() {
         this.drawBackButton();
         this.drawThumbnail();
         this.drawThumbnailToggles();

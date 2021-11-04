@@ -6,13 +6,14 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 
 
-public class OpenFileState implements  AppState {
+public class OpenFileState extends AppState {
 
-    private AppStateController context;
+    public OpenFileState(AppStateController context) {
+        super(context);
+    }
 
     @Override
-    public void draw(AppStateController context) {
-        this.context = context;
+    public void draw() {
         Button find_file_button = new Button("Open Video File...");
         find_file_button.setId("find_file_button");
         Label file_type_label = new Label("Supported Video Formats -  *.mp4 / *.avi / *.mov");
@@ -26,13 +27,13 @@ public class OpenFileState implements  AppState {
             );
             file_chooser.setTitle("Open Video File");
             try {
-                File file = file_chooser.showOpenDialog(context.getStage());
-                context.setState(new ConfigureOptionsState(file.toPath()));
+                File file = file_chooser.showOpenDialog(super.getContext().getStage());
+                super.getContext().setState(new ConfigureOptionsState(super.getContext(), file.toPath()));
             } catch (NullPointerException n) {
                 //Pass
             }
         });
         file_type_label.setTranslateY(50);
-        this.context.getRoot().getChildren().addAll(find_file_button, file_type_label);
+        super.getContext().getRoot().getChildren().addAll(find_file_button, file_type_label);
     }
 }

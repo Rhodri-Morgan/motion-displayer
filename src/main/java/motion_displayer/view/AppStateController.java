@@ -30,7 +30,7 @@ public class AppStateController {
         this.height = height;
         this.scene = new Scene(root, width, height);
         this.scene.getStylesheets().add(String.valueOf(this.getClass().getResource("/styles.css")));
-        this.setState(new ConfigureOptionsState(Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
+        this.setState(new ConfigureOptionsState(this, Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
     }
 
     public Stage getStage() {
@@ -45,6 +45,10 @@ public class AppStateController {
         return this.scene;
     }
 
+    public HostServices getHostServices() {
+        return this.host_services;
+    }
+
     public int getScreenWidth() {
         return this.width;
     }
@@ -55,32 +59,8 @@ public class AppStateController {
 
     public void setState(AppState state) {
         this.state = state;
-        this.draw();
-    }
-
-    private void draw() {
         this.root.getChildren().clear();
-        AnchorPane header = new AnchorPane();
-        header.setId("header");
-        Image github_image = new Image(String.valueOf(this.getClass().getClassLoader().getResource("github_logo_white.png")));
-        ImageView github_image_view = new ImageView(github_image);
-        github_image_view.setPreserveRatio(true);
-        github_image_view.setFitWidth(32);
-        github_image_view.setFitHeight(32);
-        AnchorPane.setTopAnchor(github_image_view, 10.0);
-        AnchorPane.setRightAnchor(github_image_view, 10.0);
-        String link = "https://github.com/Rhodri-Morgan/Motion-Displayer";
-        Hyperlink github_link = new Hyperlink(link);
-        github_link.setId("github_link");
-        github_link.setText("GitHub.com/Rhodri-Morgan/Motion-Displayer");
-        github_link.setBorder(Border.EMPTY);
-        github_link.setOnAction(e -> {
-                host_services.showDocument(link);
-        });
-        AnchorPane.setTopAnchor(github_link, 18.0);
-        AnchorPane.setRightAnchor(github_link, 45.0);
-        header.getChildren().addAll(github_image_view, github_link);
-        this.root.getChildren().add(header);
-        this.state.draw(this);
+        this.state.drawGithubLink();
+        this.state.draw();
     }
 }
