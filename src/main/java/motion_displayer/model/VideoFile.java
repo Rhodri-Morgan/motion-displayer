@@ -13,8 +13,7 @@ import javafx.scene.image.Image;
 public class VideoFile {
 
     private final VideoCapture video_capture;
-    private final Mat thumbnail_clean;
-    private final DecorateThumbnail decorate_thumbnail;
+    private final AnnotateThumbnail annotate_thumbnail;
     private final String out_path;
     private int search_size;
     private int block_size;
@@ -27,10 +26,10 @@ public class VideoFile {
         this.search_size = this.getSuggestedSearchSize();
         this.block_size = this.getSuggestedBlockSize();
         this.arrow_colour = arrow_colour;
-        this.thumbnail_clean = new Mat();
+        Mat thumbnail= new Mat();
         VideoCapture temp_capture = new VideoCapture(in_path.toString());
-        temp_capture.read(this.thumbnail_clean);
-        this.decorate_thumbnail = new DecorateThumbnail(this.getFrameWidth(), this.getFrameHeight());
+        temp_capture.read(thumbnail);
+        this.annotate_thumbnail = new AnnotateThumbnail(thumbnail, this.getFrameWidth(), this.getFrameHeight());
         String file_name  = in_path.getFileName().toString();
         String file_extension = file_name.substring(file_name.length()-4);
         String out_file_name = file_name.substring(0, file_name.length()-4)+"_out"+file_extension;
@@ -61,13 +60,8 @@ public class VideoFile {
         return this.video_capture;
     }
 
-    public Image getThumbnail(boolean print_macro_blocks, boolean print_arrows) {
-       return this.decorate_thumbnail.process(this.thumbnail_clean.clone(),
-                                              print_macro_blocks,
-                                              print_arrows,
-                                              this.arrow_colour,
-                                              this.search_size,
-                                              this.block_size);
+    public Image getThumbnail(boolean annotate_macro_block, boolean annotate_arrows) {
+       return this.annotate_thumbnail.process(annotate_macro_block, annotate_arrows, this.arrow_colour, this.search_size, this.block_size);
     }
 
     public String getOutPath() {

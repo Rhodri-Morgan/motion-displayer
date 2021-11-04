@@ -10,7 +10,7 @@ import org.opencv.core.Mat;
 public class CalculateMotionVectorLink implements VideoProcessorLink {
 
     private final int max_threads = Runtime.getRuntime().availableProcessors() * 4;
-    private List<Thread> workers = new ArrayList<>();
+    private final List<Thread> workers = new ArrayList<>();
     private VideoProcessorLink next;
 
     private void clearFinishedThreads() {
@@ -61,14 +61,16 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
                     if (this.workers.size() == this.max_threads) {
                         clearFinishedThreads();
                     }
-                    Thread worker = new Thread(new CalculateBlockVectorWorker(video,
-                                                                              lock_modified_frames,
+                    Thread worker = new Thread(new CalculateBlockVectorWorker(lock_modified_frames,
                                                                               new MeanAbsoluteDifference(),
                                                                               modified_frame,
                                                                               frame,
                                                                               previous_frame,
                                                                               current_x,
-                                                                              current_y));
+                                                                              current_y,
+                                                                              video.getSearchSize(),
+                                                                              video.getBlockSize(),
+                                                                              video.getArrowColour()));
                     worker.start();
                     this.workers.add(worker);
                     current_x += video.getSearchSize();
