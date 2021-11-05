@@ -10,7 +10,7 @@ import javafx.scene.layout.Border;
 
 public abstract class AppState {
 
-    private AppStateController context;
+    private final AppStateController context;
 
     public AppState(AppStateController context) {
         this.context = context;
@@ -21,8 +21,12 @@ public abstract class AppState {
     }
 
     public void drawGithubLink() {
-        AnchorPane header = new AnchorPane();
-        header.setId("header");
+        AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
+        boolean found = (header != null);
+        if (!found) {
+            header = new AnchorPane();
+            header.setId("header");
+        }
         Image github_image = new Image(String.valueOf(this.getClass().getClassLoader().getResource("github_logo_white.png")));
         ImageView github_image_view = new ImageView(github_image);
         github_image_view.setPreserveRatio(true);
@@ -41,16 +45,27 @@ public abstract class AppState {
         AnchorPane.setTopAnchor(github_link, 18.0);
         AnchorPane.setRightAnchor(github_link, 45.0);
         header.getChildren().addAll(github_image_view, github_link);
-        this.context.getRoot().getChildren().add(header);
+        if (!found) {
+            this.context.getRoot().getChildren().add(header);
+        }
     }
 
     public void drawBackButton() {
+        System.out.println("draw back");
         AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
+        boolean found = (header != null);
+        if (!found) {
+            header = new AnchorPane();
+            header.setId("header");
+        }
         Button back_button = new Button("\uD83E\uDC60 Back");
         back_button.setOnAction(new BackButtonHandler(this.context, new OpenFileState(this.context)));
         AnchorPane.setTopAnchor(back_button, 10.0);
         AnchorPane.setLeftAnchor(back_button, 10.0);
         header.getChildren().add(back_button);
+        if (!found) {
+            this.context.getRoot().getChildren().add(header);
+        }
     }
 
     abstract void draw();

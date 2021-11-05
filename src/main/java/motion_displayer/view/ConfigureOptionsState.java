@@ -40,8 +40,7 @@ public class ConfigureOptionsState extends AppState {
             crop = thumbnail_view.getViewport();
             super.getContext().getRoot().getChildren().remove(thumbnail_view);
             super.getContext().getRoot().getChildren().remove(reset_zoom);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // Pass
         }
         Button reset_zoom = new Button("Reset Zoom");
@@ -192,7 +191,7 @@ public class ConfigureOptionsState extends AppState {
 
     @Override
     public void draw() {
-        this.drawBackButton();
+        super.drawBackButton();
         this.drawThumbnail();
         this.drawThumbnailToggles();
         this.drawDivider();
