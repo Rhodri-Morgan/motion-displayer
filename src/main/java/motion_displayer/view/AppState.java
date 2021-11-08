@@ -51,7 +51,6 @@ public abstract class AppState {
     }
 
     public void drawBackButton() {
-        System.out.println("draw back");
         AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
         boolean found = (header != null);
         if (!found) {

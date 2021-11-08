@@ -158,6 +158,9 @@ public class ConfigureOptionsState extends AppState {
     private void drawBeginControls() {
         Button begin_button = new Button("Process File");
         begin_button.setId("begin_button");
+        begin_button.setOnAction(e -> {
+            super.getContext().setState(new ProcessFileState(super.getContext(), this.video));
+        });
         begin_button.setTranslateX(360.0);
         begin_button.setTranslateY(280.0);
         Button suggested_button = new Button("Configure to suggested values");

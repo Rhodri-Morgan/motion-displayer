@@ -25,7 +25,7 @@ public class AppStateController {
         this.height = height;
         this.scene = new Scene(root, width, height);
         this.scene.getStylesheets().add(String.valueOf(this.getClass().getResource("/styles.css")));
-        this.setState(new ConfigureOptionsState(this, Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "f1.mp4")));
+        this.setState(new ConfigureOptionsState(this, Paths.get(System.getProperty("user.home"), "Videos", "race.mp4")));
     }
 
     public Stage getStage() {

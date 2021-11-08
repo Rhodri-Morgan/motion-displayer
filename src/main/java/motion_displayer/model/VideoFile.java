@@ -14,7 +14,7 @@ public class VideoFile {
 
     private final VideoCapture video_capture;
     private final AnnotateThumbnail annotate_thumbnail;
-    private final String out_path;
+    private final Path out_path;
     private int search_size;
     private int block_size;
     private LinkedList<Mat> unmodified_frames;
@@ -33,7 +33,7 @@ public class VideoFile {
         String file_name  = in_path.getFileName().toString();
         String file_extension = file_name.substring(file_name.length()-4);
         String out_file_name = file_name.substring(0, file_name.length()-4)+"_out"+file_extension;
-        this.out_path = Paths.get(in_path.getParent().toString(), out_file_name).toString();
+        this.out_path = Paths.get(in_path.getParent().toString(), out_file_name);
     }
 
     public void setUnmodifiedFrames(LinkedList<Mat> unmodified_frames) {
@@ -64,7 +64,7 @@ public class VideoFile {
        return this.annotate_thumbnail.process(annotate_macro_block, annotate_arrows, this.arrow_colour, this.search_size, this.block_size);
     }
 
-    public String getOutPath() {
+    public Path getOutPath() {
         return this.out_path;
     }
 
@@ -130,5 +130,13 @@ public class VideoFile {
 
     public int getFps() {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FPS);
+    }
+
+    /**
+     * Warning not accurate!
+     * @return
+     */
+    public int getFrameCount() {
+        return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_COUNT);
     }
 }
