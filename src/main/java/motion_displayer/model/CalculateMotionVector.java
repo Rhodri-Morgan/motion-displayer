@@ -2,16 +2,30 @@ package motion_displayer.model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 
 
-public class CalculateMotionVectorLink implements VideoProcessorLink {
+public class CalculateMotionVector {
 
     private final int max_threads = Runtime.getRuntime().availableProcessors() * 4;
     private final List<Thread> workers = new ArrayList<>();
-    private VideoProcessorLink next;
+    private final ReentrantLock lock_modified_frames = new ReentrantLock();
+    private final int frame_width;
+    private final int frame_height;
+    private final int search_size;
+    private final int block_size;
+    private final Scalar arrow_colour;
+
+
+    public CalculateMotionVector(int frame_width, int frame_height,  int search_size, int block_size, Scalar arrow_colour) {
+        this.frame_width = frame_width;
+        this.frame_height = frame_height;
+        this.search_size = search_size;
+        this.block_size = block_size;
+        this.arrow_colour = arrow_colour;
+    }
 
     private void clearFinishedThreads() {
         List<Thread> to_remove = new ArrayList<>();
@@ -28,73 +42,39 @@ public class CalculateMotionVectorLink implements VideoProcessorLink {
         }
     }
 
-    @Override
-    public void handle(VideoFile video) {
-        System.out.println("--- Calculating Motion Vectors ---");
-        LinkedList<Mat> unmodified_frames = video.getUnmodifiedFrames();
-        LinkedList<Mat> modified_frames = new LinkedList<>();
-        int target_frames = unmodified_frames.size();
-        ReentrantLock lock_modified_frames = new ReentrantLock();
-        Mat frame = null;
-        Mat previous_frame = null;
-        while (modified_frames.size() != target_frames) {
-            Mat modified_frame = new Mat();
-            try {
-                frame = unmodified_frames.pop();
-                frame.copyTo(modified_frame);
-            } catch (NullPointerException e) {
-                modified_frames.addLast(previous_frame);
-            }
-            int current_x = 0;
-            int current_y = 0;
-            while (frame != null && previous_frame != null) {
-                if (current_y >= video.getFrameHeight()) {
-                    while (this.workers.size() != 0) {
-                        clearFinishedThreads();
-                    }
-                    modified_frames.addLast(modified_frame);
-                    break;
-                } else if (current_x >= video.getFrameWidth()) {
-                    current_x = 0;
-                    current_y += video.getSearchSize();
-                } else {
-                    if (this.workers.size() == this.max_threads) {
-                        clearFinishedThreads();
-                    }
-                    Thread worker = new Thread(new CalculateBlockVectorWorker(lock_modified_frames,
-                                                                              new MeanAbsoluteDifference(),
-                                                                              modified_frame,
-                                                                              frame,
-                                                                              previous_frame,
-                                                                              current_x,
-                                                                              current_y,
-                                                                              video.getSearchSize(),
-                                                                              video.getBlockSize(),
-                                                                              video.getArrowColour()));
-                    worker.start();
-                    this.workers.add(worker);
-                    current_x += video.getSearchSize();
+    public Mat processFrame(Mat frame, Mat previous_frame) {
+        Mat modified_frame = new Mat();
+        frame.copyTo(modified_frame);
+        int x = 0;
+        int y = 0;
+        while (true) {
+            if (y >= this.frame_height) {
+                while (this.workers.size() != 0) {
+                    clearFinishedThreads();
                 }
+                break;
+            } else if (x >= this.frame_width) {
+                x = 0;
+                y += this.search_size;
+            } else {
+                if (this.workers.size() == this.max_threads) {
+                    clearFinishedThreads();
+                }
+                Thread worker = new Thread(new CalculateBlockVectorWorker(this.lock_modified_frames,
+                                                                          new MeanAbsoluteDifference(),
+                                                                          modified_frame,
+                                                                          frame,
+                                                                          previous_frame,
+                                                                          x,
+                                                                          y,
+                                                                          this.search_size,
+                                                                          this.block_size,
+                                                                          this.arrow_colour));
+                worker.start();
+                this.workers.add(worker);
+                x += this.search_size;
             }
-            if (previous_frame == null) {
-                modified_frames.addLast(frame);
-            }
-            previous_frame = frame;
-            System.out.printf("\rProcessed Frame Count %d/%d", modified_frames.size(), target_frames);
         }
-        System.out.print("\n");
-        video.setModifiedFrames(modified_frames);
-        if (this.next != null) {
-            this.next.handle(video);
-        }
-    }
-
-    @Override
-    public void addLink(VideoProcessorLink link) {
-        if (this.next != null) {
-            this.next.addLink(link);
-        } else {
-            this.next = link;
-        }
+        return modified_frame;
     }
 }

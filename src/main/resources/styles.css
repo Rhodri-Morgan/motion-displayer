@@ -83,3 +83,15 @@
 .color-palette .hyperlink, .color-palette .separator {
     visibility: hidden;
 }
+
+#processing_label {
+    -fx-font-size: 25;
+}
+
+.processing_details {
+    -fx-font-size: 15;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #00c326;
+}

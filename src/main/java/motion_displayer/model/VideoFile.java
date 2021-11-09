@@ -5,7 +5,9 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.VideoWriter;
 import org.opencv.videoio.Videoio;
 import javafx.scene.image.Image;
 
@@ -14,15 +16,20 @@ public class VideoFile {
 
     private final VideoCapture video_capture;
     private final AnnotateThumbnail annotate_thumbnail;
+    private final Path in_path;
     private final Path out_path;
+    private VideoWriter video_writer;
     private int search_size;
     private int block_size;
-    private LinkedList<Mat> unmodified_frames;
-    private LinkedList<Mat> modified_frames;
     private Scalar arrow_colour;
 
     public VideoFile(Path in_path, Scalar arrow_colour) {
         this.video_capture = new VideoCapture(in_path.toString());
+        this.in_path = in_path;
+        String file_name  = in_path.getFileName().toString();
+        String file_extension = file_name.substring(file_name.length()-4);
+        String out_file_name = file_name.substring(0, file_name.length()-4)+"_out"+file_extension;
+        this.out_path = Paths.get(in_path.getParent().toString(), out_file_name);
         this.search_size = this.getSuggestedSearchSize();
         this.block_size = this.getSuggestedBlockSize();
         this.arrow_colour = arrow_colour;
@@ -30,18 +37,6 @@ public class VideoFile {
         VideoCapture temp_capture = new VideoCapture(in_path.toString());
         temp_capture.read(thumbnail);
         this.annotate_thumbnail = new AnnotateThumbnail(thumbnail, this.getFrameWidth(), this.getFrameHeight());
-        String file_name  = in_path.getFileName().toString();
-        String file_extension = file_name.substring(file_name.length()-4);
-        String out_file_name = file_name.substring(0, file_name.length()-4)+"_out"+file_extension;
-        this.out_path = Paths.get(in_path.getParent().toString(), out_file_name);
-    }
-
-    public void setUnmodifiedFrames(LinkedList<Mat> unmodified_frames) {
-        this.unmodified_frames = unmodified_frames;
-    }
-
-    public void setModifiedFrames(LinkedList<Mat> modified_frames) {
-        this.modified_frames = modified_frames;
     }
 
     public void setSearchSize(int search_size) {
@@ -60,20 +55,22 @@ public class VideoFile {
         return this.video_capture;
     }
 
+    public VideoWriter getVideoWriter() {
+        if (this.video_writer == null) {
+            this.video_writer = new VideoWriter(this.getOutPath().toString(),
+                                                VideoWriter.fourcc('D','I','V','X'),
+                                                this.getFps(),
+                                                new Size(this.getFrameWidth(), this.getFrameHeight()));
+        }
+        return this.video_writer;
+    }
+
     public Image getThumbnail(boolean annotate_macro_block, boolean annotate_arrows) {
        return this.annotate_thumbnail.process(annotate_macro_block, annotate_arrows, this.arrow_colour, this.search_size, this.block_size);
     }
 
     public Path getOutPath() {
         return this.out_path;
-    }
-
-    public LinkedList<Mat> getUnmodifiedFrames() {
-        return this.unmodified_frames;
-    }
-
-    public LinkedList<Mat> getModifiedFrames() {
-        return this.modified_frames;
     }
 
     public int getSearchSize() {
@@ -132,10 +129,6 @@ public class VideoFile {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FPS);
     }
 
-    /**
-     * Warning not accurate!
-     * @return
-     */
     public int getFrameCount() {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_COUNT);
     }
