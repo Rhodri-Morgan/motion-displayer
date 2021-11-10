@@ -1,10 +1,11 @@
 package motion_displayer.view;
 
-import java.nio.file.Paths;
 import javafx.application.HostServices;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+
+import java.nio.file.Paths;
 
 
 public class AppStateController {
@@ -25,7 +26,7 @@ public class AppStateController {
         this.height = height;
         this.scene = new Scene(root, width, height);
         this.scene.getStylesheets().add(String.valueOf(this.getClass().getResource("/styles.css")));
-        this.setState(new ConfigureOptionsState(this, Paths.get(System.getProperty("user.home"), "Videos", "f1.mp4")));
+        this.setState(new OpenFileState(this));
     }
 
     public Stage getStage() {

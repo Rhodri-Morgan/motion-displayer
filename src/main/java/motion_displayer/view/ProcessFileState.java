@@ -12,6 +12,9 @@ public class ProcessFileState extends  AppState {
 
     private final VideoFile video;
     private final VideoProcessor video_processor;
+    private boolean exception_occurred = false;
+    private Thread thread_video_processor;
+    private Timeline time_line;
 
     public ProcessFileState(AppStateController context, VideoFile video) {
         super(context);
@@ -19,36 +22,46 @@ public class ProcessFileState extends  AppState {
         this.video_processor = new VideoProcessor(video);
     }
 
-    @Override
-    void draw() {
+    private void beginProcessing() {
         Runnable runnable_video_processor = () -> {
             try {
                 this.video_processor.processVideo();
             } catch (Exception e) {
-                System.out.println(e);
-                // Goto error screen
+                this.exception_occurred = true;
             }
         };
-        Thread thread_video_processor = new Thread(runnable_video_processor);
-        thread_video_processor.start();
+        this.thread_video_processor = new Thread(runnable_video_processor);
+        this.thread_video_processor.start();
+    }
+
+    private void drawProgress() {
         Label processing_label = new Label("Processing Video File");
-        processing_label.setId("processing_label");
-        processing_label.setTranslateY(-40);
-        Label processed_count_label = new Label();
-        processed_count_label.getStyleClass().add("processing_details");
-        processed_count_label.setTranslateY(35);
-        Label estimated_time_label = new Label();
-        estimated_time_label.getStyleClass().add("processing_details");
-        estimated_time_label.setTranslateY(60);
+        processing_label.getStyleClass().add("large_sized_text");
+        processing_label.setTranslateY(-60.0);
         ProgressBar progress_bar = new ProgressBar(0);
+        progress_bar.setId("progress_bar");
         progress_bar.setMinWidth(400);
         progress_bar.setMaxWidth(400);
         progress_bar.setMinHeight(25);
         progress_bar.setMaxHeight(25);
+        Label processed_count_label = new Label("Completed 0 / " + this.video.getFrameCount() + " frames.");
+        processed_count_label.getStyleClass().add("medium_sized_text");
+        processed_count_label.setId("processed_count_label");
+        processed_count_label.setTranslateY(60.0);
+        Label estimated_time_label = new Label();
+        estimated_time_label.getStyleClass().add("medium_sized_text");
+        estimated_time_label.setId("estimated_time_label");
+        estimated_time_label.setTranslateY(85.0);
         super.getContext().getRoot().getChildren().addAll(processing_label, progress_bar, processed_count_label, estimated_time_label);
-        Timeline timeLine = new Timeline(new KeyFrame(javafx.util.Duration.seconds(0.5), e -> {
+    }
+
+    private void setupTimeline() {
+        ProgressBar progress_bar = (ProgressBar) super.getContext().getScene().lookup("#progress_bar");
+        Label processed_count_label = (Label) super.getContext().getScene().lookup("#processed_count_label");
+        Label estimated_time_label = (Label) super.getContext().getScene().lookup("#estimated_time_label");
+        this.time_line = new Timeline(new KeyFrame(javafx.util.Duration.seconds(0.25), e -> {
             try {
-                if (thread_video_processor.isAlive()) {
+                if (this.thread_video_processor.isAlive()) {
                     progress_bar.setProgress(this.video_processor.getProgress());
                     processed_count_label.setText("Completed " + this.video_processor.getProcessedFrames() + " / " + this.video.getFrameCount() + " frames.");
                     java.time.Duration estimated_time = this.video_processor.getEstimatedProcessingTime();
@@ -58,14 +71,32 @@ public class ProcessFileState extends  AppState {
                     } else {
                         estimated_time_label.setText("Estimated time to completion " + estimated_time.toHours() + " hours, " + estimated_minutes_seconds);
                     }
-                } else {
-                    // Goto success screen
+                }
+                else if (this.exception_occurred) {
+                    this.time_line.stop();
+                    super.getContext().setState(new ErrorOccurredState(super.getContext()));
+                }
+                else {
+                    this.time_line.stop();
+                    super.getContext().setState(new SuccessProcessedState(super.getContext(), this.video.getOutPath()));
                 }
             } catch (NullPointerException | ArithmeticException n) {
                 // Pass
             }
         }));
-        timeLine.setCycleCount(Timeline.INDEFINITE);
-        timeLine.play();
+        this.time_line.setCycleCount(Timeline.INDEFINITE);
+        this.time_line.play();
+    }
+
+    @Override
+    void draw() {
+        try {
+            this.beginProcessing();
+            this.drawProgress();
+            this.setupTimeline();
+        } catch (Exception e) {
+            e.printStackTrace();
+            super.getContext().setState(new ErrorOccurredState(super.getContext()));
+        }
     }
 }

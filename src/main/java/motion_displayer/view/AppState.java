@@ -50,7 +50,7 @@ public abstract class AppState {
         }
     }
 
-    public void drawBackButton() {
+    public void drawBackButton(AppState previous_stage) {
         AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
         boolean found = (header != null);
         if (!found) {
@@ -58,7 +58,7 @@ public abstract class AppState {
             header.setId("header");
         }
         Button back_button = new Button("\uD83E\uDC60 Back");
-        back_button.setOnAction(new BackButtonHandler(this.context, new OpenFileState(this.context)));
+        back_button.setOnAction(new ChangeStateButtonHandler(this.context, previous_stage));
         AnchorPane.setTopAnchor(back_button, 10.0);
         AnchorPane.setLeftAnchor(back_button, 10.0);
         header.getChildren().add(back_button);

@@ -85,7 +85,7 @@ public class CalculateBlockVectorWorker implements Runnable {
         Point start = new Point(matching_x, matching_y);
         Point end = new Point(this.x+center_block_modifier, this.y+center_block_modifier);
         this.lock_modified_frame.lock();
-        if (matching_metric != null && matching_metric <= 50) {
+        if (matching_metric != null) {
             Imgproc.arrowedLine(this.modified_frame,
                                 start,
                                 end,

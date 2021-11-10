@@ -1,6 +1,7 @@
 package motion_displayer.view;
 
 import motion_displayer.model.VideoFile;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.opencv.core.Scalar;
 import javafx.scene.image.Image;
@@ -23,6 +24,9 @@ public class ConfigureOptionsState extends AppState {
 
     public ConfigureOptionsState(AppStateController context, Path file_path){
         super(context);
+        if (!Files.exists(file_path)) {
+            super.getContext().setState(new ErrorOccurredState(super.getContext()));
+        }
         this.video = new VideoFile(file_path, new Scalar(this.default_arrows_colour.getBlue(),
                                                          this.default_arrows_colour.getGreen(),
                                                          this.default_arrows_colour.getRed()));
@@ -138,7 +142,7 @@ public class ConfigureOptionsState extends AppState {
             }
         });
         search_length_slider.setBlockIncrement(1);
-        search_length_slider.setMajorTickUnit(4);
+        search_length_slider.setMajorTickUnit(5);
         search_length_slider.setShowTickMarks(true);
         search_length_slider.setShowTickLabels(true);
         search_length_slider.setSnapToTicks(true);
@@ -194,11 +198,16 @@ public class ConfigureOptionsState extends AppState {
 
     @Override
     public void draw() {
-        super.drawBackButton();
-        this.drawThumbnail();
-        this.drawThumbnailToggles();
-        this.drawDivider();
-        this.drawSliderControls();
-        this.drawBeginControls();
+        try {
+            super.drawBackButton(new OpenFileState(super.getContext()));
+            this.drawThumbnail();
+            this.drawThumbnailToggles();
+            this.drawDivider();
+            this.drawSliderControls();
+            this.drawBeginControls();
+        } catch (Exception e) {
+            e.printStackTrace();
+            super.getContext().setState(new ErrorOccurredState(super.getContext()));
+        }
     }
 }

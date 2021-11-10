@@ -28,10 +28,6 @@
     -fx-font-size: 25;
 }
 
-#file_type_label {
-    -fx-font-size: 15;
-}
-
 #thumbnail_view {
     -fx-cursor: hand;
 }
@@ -84,14 +80,23 @@
     visibility: hidden;
 }
 
-#processing_label {
+.large_sized_text {
     -fx-font-size: 25;
 }
 
-.processing_details {
+.medium_sized_text {
     -fx-font-size: 15;
 }
 
 .progress-bar .bar {
     -fx-background-color: #00c326;
+}
+
+#error_notification {
+    -fx-font-size: 22;
+}
+
+#restart_button {
+    -fx-background-radius: 10;
+    -fx-font-size: 15;
 }

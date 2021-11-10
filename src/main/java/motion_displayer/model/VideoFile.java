@@ -1,6 +1,5 @@
 package motion_displayer.model;
 
-import java.util.LinkedList;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import org.opencv.core.Mat;
@@ -67,6 +66,10 @@ public class VideoFile {
 
     public Image getThumbnail(boolean annotate_macro_block, boolean annotate_arrows) {
        return this.annotate_thumbnail.process(annotate_macro_block, annotate_arrows, this.arrow_colour, this.search_size, this.block_size);
+    }
+
+    public Path getInPath() {
+        return this.in_path;
     }
 
     public Path getOutPath() {
