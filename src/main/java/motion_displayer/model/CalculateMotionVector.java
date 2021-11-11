@@ -27,6 +27,9 @@ public class CalculateMotionVector {
         this.arrow_colour = arrow_colour;
     }
 
+    /**
+     * Waits for a thread to finish and clears it for use
+     */
     private void clearFinishedThreads() {
         List<Thread> to_remove = new ArrayList<>();
         while (true) {
@@ -42,6 +45,12 @@ public class CalculateMotionVector {
         }
     }
 
+    /**
+     * Processes frame applying motion vectors to each of its search areas
+     * @param frame frame to investigate
+     * @param previous_frame frame to compare motion against current frame
+     * @return modified copy of frame with motion vectors applied
+     */
     public Mat processFrame(Mat frame, Mat previous_frame) {
         Mat modified_frame = new Mat();
         frame.copyTo(modified_frame);

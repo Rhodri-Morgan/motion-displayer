@@ -20,6 +20,9 @@ public abstract class AppState {
         return this.context;
     }
 
+    /**
+     * Draw UI objects for the github icon and repository link
+     */
     public void drawGithubLink() {
         AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
         boolean found = (header != null);
@@ -50,6 +53,9 @@ public abstract class AppState {
         }
     }
 
+    /**
+     * Draw UI objects and functionality for the back a stage button
+     */
     public void drawBackButton(AppState previous_stage) {
         AnchorPane header = (AnchorPane) this.context.getScene().lookup("#header");
         boolean found = (header != null);
@@ -67,5 +73,8 @@ public abstract class AppState {
         }
     }
 
+    /**
+     * Draw all UI objects and create functionality for app state
+     */
     abstract void draw();
 }

@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.nio.file.Path;
 
+
 public class SuccessProcessedState extends AppState {
 
     private final Path output_file;
@@ -15,6 +16,9 @@ public class SuccessProcessedState extends AppState {
         this.output_file = output_file;
     }
 
+    /**
+     * Draw success title and details of output file
+     */
     private void drawSuccessTitle() {
         Image complete_image = new Image(String.valueOf(this.getClass().getClassLoader().getResource("tick.png")));
         ImageView complete_image_view = new ImageView(complete_image);
@@ -32,6 +36,9 @@ public class SuccessProcessedState extends AppState {
         super.getContext().getRoot().getChildren().addAll(complete_image_view, complete_notification_label, file_location_label);
     }
 
+    /**
+     * Draw button and functionality to process another file (go back to open file state)
+     */
     private void drawRestartButton() {
         Button restart_button = new Button("Process Another File");
         restart_button.setTranslateY(90.0);

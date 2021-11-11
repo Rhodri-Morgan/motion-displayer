@@ -1,6 +1,7 @@
 package motion_displayer.view;
 
 import javafx.event.ActionEvent;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -28,12 +29,20 @@ public class ImageZoomHandler {
         this.is_cropped = is_cropped;
     }
 
+    /**
+     * Sets image in a cropped stage - restricting further zooming and making resetting zoom possible
+     */
     public void setCropped() {
         this.is_cropped = true;
+        this.thumbnail_view.setCursor(Cursor.DEFAULT);
         this.reset_zoom.setVisible(true);
         this.reset_zoom.toFront();
     }
 
+    /**
+     * Stores mouse click begin location and draws rectangle to show user highlighted section of image
+     * @param e mouse event of user click
+     */
     private void setOnMousePressedThumbnail(MouseEvent e) {
         if (!this.is_cropped) {
             this.mouse_click_x_thumbnail = e.getX();
@@ -46,6 +55,13 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Bounds a value between min and max - e.g returning max if value greater than max
+     * @param value value to be bounded between min/max
+     * @param min min allowed for value
+     * @param max max allowed for value
+     * @return bounded value between min/max if exceeding those set boundaries
+     */
     private double boundValue(double value, double min, double max) {
         if (value < min) {
             return min;
@@ -58,6 +74,10 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Using release location calculates selected area (also using stored start) and crops image to show that area
+     * @param e mouse event of user releasing click
+     */
     private void setOnMouseReleasedThumbnail(MouseEvent e) {
         if (!this.is_cropped) {
             double mouse_release_x_thumbnail = this.boundValue(e.getX(), 0, thumbnail_view.getBoundsInLocal().getWidth());
@@ -78,6 +98,12 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Get adjusted x coordinate of mouse
+     * @param mouse_current_x_thumbnail x coordinate of mouse in thumbnail
+     * @param mouse_current_x_scene x coordinate of mouse in scene
+     * @return adjusted x coordinate
+     */
     private double getBoundedSceneX(double mouse_current_x_thumbnail, double mouse_current_x_scene) {
         double x_margin = (this.context.getScreenWidth() - thumbnail_view.getBoundsInLocal().getWidth()) / 2;
         if (mouse_current_x_thumbnail < 0) {
@@ -91,6 +117,12 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Get adjusted y coordinate of mouse
+     * @param mouse_current_y_thumbnail y coordinate of mouse in thumbnail
+     * @param mouse_current_y_scene y coordinate of mouse in scene
+     * @return adjusted y coordinate
+     */
     private double getBoundedSceneY(double mouse_current_y_thumbnail, double mouse_current_y_scene) {
         double y_margin = (this.context.getScreenHeight() - thumbnail_view.getBoundsInLocal().getHeight()) / 2;
         if (mouse_current_y_thumbnail < 0) {
@@ -104,6 +136,10 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Adjust selected area to adapt to size and location of mouse while dragging (properly represent selected crop)
+     * @param e mouse event of user dragging while clicked
+     */
     private void setOnMouseDraggedThumbnail(MouseEvent e) {
         if (!this.is_cropped) {
             double mouse_current_bounded_x_scene = this.getBoundedSceneX(e.getX(), e.getSceneX()) - ((double) this.context.getScreenWidth() / 2);
@@ -126,12 +162,19 @@ public class ImageZoomHandler {
         }
     }
 
+    /**
+     * Resets zoom on image (removing crop) and allows the user to zoom again
+     * @param e action event of clicking button
+     */
     private void setOnActionResetZoom(ActionEvent e) {
         this.is_cropped = false;
         this.reset_zoom.setVisible(false);
         this.thumbnail_view.setViewport(null);
     }
 
+    /**
+     * Sets up functionality to enable zooming
+     */
     public void enableZoomFunctionality() {
         this.thumbnail_view.setOnMousePressed(e -> {this.setOnMousePressedThumbnail(e);});
         this.thumbnail_view.setOnMouseReleased(e -> {this.setOnMouseReleasedThumbnail(e);});

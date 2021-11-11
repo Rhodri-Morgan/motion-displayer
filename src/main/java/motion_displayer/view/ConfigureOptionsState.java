@@ -22,6 +22,11 @@ public class ConfigureOptionsState extends AppState {
     private final Color default_arrows_colour = Color.BLACK;
     private final VideoFile video;
 
+    /**
+     * ConfigureOptionsState Constructor checks file exists if not going to error state otherwise making video object
+     * @param context app state context
+     * @param file_path path of video file for processing
+     */
     public ConfigureOptionsState(AppStateController context, Path file_path){
         super(context);
         if (!Files.exists(file_path)) {
@@ -32,6 +37,9 @@ public class ConfigureOptionsState extends AppState {
                                                          this.default_arrows_colour.getRed()));
     }
 
+    /**
+     * Draws thumbnail and enables functionality for zooming and user interaction
+     */
     private void drawThumbnail() {
         boolean print_macro_blocks = false;
         boolean print_arrows = true;
@@ -70,6 +78,9 @@ public class ConfigureOptionsState extends AppState {
         super.getContext().getRoot().getChildren().addAll(thumbnail_view, reset_zoom);
     }
 
+    /**
+     * Draws UI toggles to enable/disable sample motion vectors and block/search area boundaries
+     */
     private void drawThumbnailToggles() {
         CheckBox macro_blocks_toggle = new CheckBox("Search/Block Outlines");
         macro_blocks_toggle.setId("macro_blocks_toggle");
@@ -91,6 +102,9 @@ public class ConfigureOptionsState extends AppState {
         super.getContext().getRoot().getChildren().addAll(macro_blocks_toggle, vectors_toggle);
     }
 
+    /**
+     * Draws UI divider between thumbnail processing options
+     */
     private void drawDivider() {
         Line divider = new Line();
         divider.setId("divider");
@@ -100,6 +114,9 @@ public class ConfigureOptionsState extends AppState {
         super.getContext().getRoot().getChildren().add(divider);
     }
 
+    /**
+     * Draws block and search area size sliders for allowing the user to configure to their specifications
+     */
     private void drawSliderControls() {
         Label block_length_label = new Label("Block Area Side Length:");
         block_length_label.setTranslateX(-404.0);
@@ -159,6 +176,9 @@ public class ConfigureOptionsState extends AppState {
         super.getContext().getRoot().getChildren().addAll(search_length_label, search_length_slider, search_length_value);
     }
 
+    /**
+     * Draws controls for setting to recommended settings, modifying motion vector colour and beginning processing
+     */
     private void drawBeginControls() {
         Button begin_button = new Button("Process File");
         begin_button.setId("begin_button");

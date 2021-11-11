@@ -24,6 +24,15 @@ public class AnnotateThumbnail {
         this.frame_height = frame_height;
     }
 
+    /**
+     * Applies styling choices to passed thumbnail
+     * @param annotate_macro_block flag whether to draw search and block area boundaries
+     * @param annotate_arrows flag whether to draw sample motion vector arrows
+     * @param arrow_colour colour of sample motion vectors to be drawn
+     * @param search_size size of search area
+     * @param block_size size of block area
+     * @return modified thumbnail with styling choices and parameters applied
+     */
     public Image process(boolean annotate_macro_block, boolean annotate_arrows, Scalar arrow_colour, int search_size, int block_size) {
         Mat annotated_thumbnail = new Mat();
         this.thumbnail.copyTo(annotated_thumbnail);

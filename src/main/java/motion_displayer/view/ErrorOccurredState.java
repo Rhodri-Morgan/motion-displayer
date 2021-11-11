@@ -11,6 +11,9 @@ public class ErrorOccurredState extends AppState {
         super(context);
     }
 
+    /**
+     * Draws error title and cross image
+     */
     private void drawErrorTitle() {
         Image error_image = new Image(String.valueOf(this.getClass().getClassLoader().getResource("cross.png")));
         ImageView error_image_view = new ImageView(error_image);
@@ -25,6 +28,9 @@ public class ErrorOccurredState extends AppState {
         super.getContext().getRoot().getChildren().addAll(error_image_view, error_notification_label);
     }
 
+    /**
+     * Draws a list of recommended fixes and further instructions
+     */
     private void drawErrorFixes() {
         Label instructions_item_1_label = new Label("Please ensure:     \u2022 During processing the input file is not deleted/corrupted.");
         instructions_item_1_label.getStyleClass().add("medium_sized_text");

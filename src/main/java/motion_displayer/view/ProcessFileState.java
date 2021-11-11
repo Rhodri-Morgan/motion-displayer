@@ -22,6 +22,9 @@ public class ProcessFileState extends  AppState {
         this.video_processor = new VideoProcessor(video);
     }
 
+    /**
+     * Begin thread to perform video processing while JavaFx thread builds UI
+     */
     private void beginProcessing() {
         Runnable runnable_video_processor = () -> {
             try {
@@ -34,6 +37,9 @@ public class ProcessFileState extends  AppState {
         this.thread_video_processor.start();
     }
 
+    /**
+     * Draw progress title, bar, percentage and estimated time until completion
+     */
     private void drawProgress() {
         Label processing_label = new Label("Processing Video File");
         processing_label.getStyleClass().add("large_sized_text");
@@ -55,6 +61,9 @@ public class ProcessFileState extends  AppState {
         super.getContext().getRoot().getChildren().addAll(processing_label, progress_bar, processed_count_label, estimated_time_label);
     }
 
+    /**
+     * Sets up timeline to update UI elements to properly represent progress
+     */
     private void setupTimeline() {
         ProgressBar progress_bar = (ProgressBar) super.getContext().getScene().lookup("#progress_bar");
         Label processed_count_label = (Label) super.getContext().getScene().lookup("#processed_count_label");

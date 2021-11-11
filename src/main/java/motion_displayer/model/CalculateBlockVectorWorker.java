@@ -22,6 +22,19 @@ public class CalculateBlockVectorWorker implements Runnable {
     private final int block_size;
     private final Scalar arrow_colour;
 
+    /**
+     * CalculateBlockVectorWorker Constructor
+     * @param lock_modified_frame lock ensuring modified frame has no errors when writing to it
+     * @param frame_matching_strategy strategy used for matching metric
+     * @param modified_frame copy of 'frame' that has motion vector calculations applied to it
+     * @param frame frame to investigate
+     * @param previous_frame frame to compare motion against current frame
+     * @param x current x coordinate/pixel within frame
+     * @param y current y coordinate/pixel within frame
+     * @param search_size size of search area
+     * @param block_size size of block area
+     * @param arrow_colour colour of motion vectors to be drawn
+     */
     public CalculateBlockVectorWorker(ReentrantLock lock_modified_frame,
                                       FrameMatchingStrategy frame_matching_strategy,
                                       Mat modified_frame,
@@ -44,6 +57,9 @@ public class CalculateBlockVectorWorker implements Runnable {
         this.arrow_colour = arrow_colour;
     }
 
+    /**
+     * Calculates motion vector for each block within search area and draws an arrow to that determined to be most related to the central block
+     */
     @Override
     public void run() {
         Rect search_area_roi = new Rect(this.x, this.y, this.search_size, this.search_size);

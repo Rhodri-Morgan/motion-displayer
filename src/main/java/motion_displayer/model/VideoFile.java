@@ -22,6 +22,11 @@ public class VideoFile {
     private int block_size;
     private Scalar arrow_colour;
 
+    /**
+     * VideoFile Constructor extracts thumbnail, gets out path and applied suggested search/block sizes
+     * @param in_path path of video for processing
+     * @param arrow_colour colour of motion vectors to be drawn
+     */
     public VideoFile(Path in_path, Scalar arrow_colour) {
         this.video_capture = new VideoCapture(in_path.toString());
         this.in_path = in_path;
@@ -54,6 +59,10 @@ public class VideoFile {
         return this.video_capture;
     }
 
+    /**
+     * If video writer has not been instantiated it creates output file and passes method to write to it
+     * @return video writer object for writing to out path
+     */
     public VideoWriter getVideoWriter() {
         if (this.video_writer == null) {
             this.video_writer = new VideoWriter(this.getOutPath().toString(),
@@ -64,6 +73,12 @@ public class VideoFile {
         return this.video_writer;
     }
 
+    /**
+     * Gets and annotates thumbnail with given parameters
+     * @param annotate_macro_block flag whether to draw search and block area boundaries
+     * @param annotate_arrows flag whether to draw sample motion vector arrows
+     * @return annotated thumbnail with parameters in this class and passed to method
+     */
     public Image getThumbnail(boolean annotate_macro_block, boolean annotate_arrows) {
        return this.annotate_thumbnail.process(annotate_macro_block, annotate_arrows, this.arrow_colour, this.search_size, this.block_size);
     }
@@ -89,7 +104,7 @@ public class VideoFile {
     }
 
     public int getMaxSearchSize() {
-        return 60;
+        return 50;
     }
 
     public int getBlockSize() {
@@ -100,6 +115,10 @@ public class VideoFile {
         return 7;
     }
 
+    /**
+     * Gets the min size of a block contained within the search area and ensures it is an even number
+     * @return min block size allowed for this search area size in this video
+     */
     public int getMinBlockSize() {
         int min_block_size = (int) Math.round(this.search_size*0.25);
         if (min_block_size % 2 != 0) {
@@ -108,6 +127,10 @@ public class VideoFile {
         return min_block_size;
     }
 
+    /**
+     * Gets the max size of a block contained within the search area and ensures it is an even number
+     * @return max block size allowed for this search area size in this video
+     */
     public int getMaxBlockSize() {
         int max_block_size = (int) Math.round(this.search_size*0.75);
         if (max_block_size % 2 != 0) {
@@ -132,6 +155,7 @@ public class VideoFile {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FPS);
     }
 
+    // WARNING THIS IS NOT 100% ACCURATE
     public int getFrameCount() {
         return (int) this.video_capture.get(Videoio.CAP_PROP_FRAME_COUNT);
     }

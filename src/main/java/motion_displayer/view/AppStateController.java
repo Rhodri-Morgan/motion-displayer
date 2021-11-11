@@ -5,8 +5,6 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 
-import java.nio.file.Paths;
-
 
 public class AppStateController {
 
@@ -53,6 +51,10 @@ public class AppStateController {
         return this.height;
     }
 
+    /**
+     * Modify state of app such that UI objects are cleared and replaced
+     * @param state to be replaced with current
+     */
     public void setState(AppState state) {
         this.state = state;
         this.root.getChildren().clear();

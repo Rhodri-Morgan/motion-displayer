@@ -16,6 +16,10 @@ public class VideoProcessor {
         this.video = video;
     }
 
+    /**
+     * Extracts the next frame from video in queue
+     * @return Next frame in video
+     */
     private Mat extractNextFrame() {
         Mat frame = new Mat();
         if (this.video.getVideoCapture().read(frame)) {
@@ -27,6 +31,11 @@ public class VideoProcessor {
         }
     }
 
+    /**
+     * Writes frame to output video
+     * @param frame frame to be written to output video
+     * @throws FileNotFoundException if output video has been deleted or cannot be found
+     */
     private void writeFrame(Mat frame) throws FileNotFoundException {
         this.video.getVideoWriter().write(frame);
         if (!Files.exists(video.getOutPath())) {
@@ -34,6 +43,10 @@ public class VideoProcessor {
         }
     }
 
+    /**
+     * Processes video and is the controller for handling the model package and applying motion vectors
+     * @throws Exception If an error occurs at any point of processing unexpectedly
+     */
     public void processVideo() throws Exception {
         Mat frame;
         Mat previous_frame = null;
@@ -67,6 +80,10 @@ public class VideoProcessor {
         this.video.getVideoCapture().release();
     }
 
+    /**
+     * Get approximate progress of processing as a percentage between 0-1
+     * @return approximate progress
+     */
     public double getProgress() {
         return (double) this.frames_processed / this.video.getFrameCount();
     }
@@ -75,6 +92,10 @@ public class VideoProcessor {
         return this.frames_processed;
     }
 
+    /**
+     * Calculates the estimated time to process all frames and finish all operations
+     * @return duration of estimated time
+     */
     public Duration getEstimatedProcessingTime() {
         long average_time_taken_ms = this.summed_processing_time_ms / this.frames_processed;
         long estimated_time_ms = average_time_taken_ms * (this.video.getFrameCount() - this.frames_processed);
