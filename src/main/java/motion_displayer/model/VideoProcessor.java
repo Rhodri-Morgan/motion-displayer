@@ -60,12 +60,14 @@ public class VideoProcessor {
             frame = this.extractNextFrame();
             if (previous_frame == null) {
                 this.writeFrame(frame);
-                previous_frame = frame;
+                previous_frame = new Mat();
+                frame.copyTo(previous_frame);
                 this.frames_processed += 1;
             }
             else if (frame != null) {
                 Mat processed_frame = calculate_motion_vector.processFrame(frame, previous_frame);
                 this.writeFrame(processed_frame);
+                frame.copyTo(previous_frame);
                 this.frames_processed += 1;
             }
             else {

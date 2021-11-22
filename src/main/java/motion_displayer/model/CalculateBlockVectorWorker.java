@@ -74,7 +74,7 @@ public class CalculateBlockVectorWorker implements Runnable {
         } catch (CvException e) {
             return;
         }
-        Double matching_metric = null;
+        double matching_metric = -1.0;          // This is fine since it should never go negative
         int matching_x = 0;
         int matching_y = 0;
         for (int search_y=0; search_y<this.search_size-this.block_size; search_y++) {
@@ -82,14 +82,13 @@ public class CalculateBlockVectorWorker implements Runnable {
                 try {
                     Rect previous_search_roi = new Rect(search_x, search_y, this.block_size, this.block_size);
                     Mat previous_search_block = new Mat(previous_search_area, previous_search_roi);
-                    Double metric = this.frame_matching_strategy.match(center_block,
-                                                                       this.x+center_block_modifier,
-                                                                       this.y+center_block_modifier,
-                                                                       previous_search_block,
-                                                                       this.x+search_x,
-                                                                       this.y+search_y);
-                    if (matching_metric == null || metric < matching_metric) {
+                    double metric = this.frame_matching_strategy.match(center_block, previous_search_block);
+                    if (matching_metric == -1.0 || metric < matching_metric) {
                         matching_metric = metric;
+                        matching_x = this.x+search_x;
+                        matching_y = this.y+search_y;
+                    }
+                    else if (metric == matching_metric && search_x == center_block_modifier && search_y == center_block_modifier) {
                         matching_x = this.x+search_x;
                         matching_y = this.y+search_y;
                     }
@@ -101,7 +100,7 @@ public class CalculateBlockVectorWorker implements Runnable {
         Point start = new Point(matching_x, matching_y);
         Point end = new Point(this.x+center_block_modifier, this.y+center_block_modifier);
         this.lock_modified_frame.lock();
-        if (matching_metric != null) {
+        if (matching_metric != -1.0) {
             Imgproc.arrowedLine(this.modified_frame,
                                 start,
                                 end,

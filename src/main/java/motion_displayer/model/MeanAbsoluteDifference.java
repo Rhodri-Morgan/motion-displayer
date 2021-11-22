@@ -5,8 +5,9 @@ import org.opencv.core.Mat;
 
 public class MeanAbsoluteDifference extends FrameMatchingStrategy {
 
+
     @Override
-    public Double match(Mat block, int block_x, int block_y, Mat search_block, int search_x, int search_y) {
+    public Double match(Mat block, Mat search_block) {
         double total = 0;
         for (int y=0; y<block.height(); y++) {
             for (int x=0; x<block.width(); x++) {

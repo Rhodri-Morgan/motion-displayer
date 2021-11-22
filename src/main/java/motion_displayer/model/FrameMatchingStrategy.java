@@ -23,12 +23,8 @@ public abstract class FrameMatchingStrategy {
     /**
      * Applies matching metric
      * @param block subset of original image that is centered block in search area
-     * @param block_x block x (top-left) coordinate in original image
-     * @param block_y block y (top-left) coordinate in original image
      * @param search_block subset of original image that is a valid iterating block in search area
-     * @param search_x search block x (top-left) coordinate in original image
-     * @param search_y search block y (top-left) coordinate in original image
      * @return value of applying given data to matching metric
      */
-    abstract Double match(Mat block, int block_x, int block_y, Mat search_block, int search_x, int search_y);
+    abstract Double match(Mat block, Mat search_block);
 }
