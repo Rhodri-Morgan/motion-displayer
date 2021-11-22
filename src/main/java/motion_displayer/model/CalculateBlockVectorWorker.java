@@ -89,6 +89,7 @@ public class CalculateBlockVectorWorker implements Runnable {
                         matching_y = this.y+search_y;
                     }
                     else if (metric == matching_metric && search_x == center_block_modifier && search_y == center_block_modifier) {
+                        // Want to favour middle block i.e drawing no motion vector in solid colour background
                         matching_x = this.x+search_x;
                         matching_y = this.y+search_y;
                     }
