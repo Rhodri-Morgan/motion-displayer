@@ -9,7 +9,7 @@
   <chdir>.</chdir>
   <priority>high</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
-  <supportUrl>https://github.com/Rhodri-Morgan/Motion-Displayer/issues</supportUrl>
+  <supportUrl>https://github.com/Rhodri-Morgan/Motion-Displayer/blob/main/JRE_DOWNLOAD.md</supportUrl>
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
