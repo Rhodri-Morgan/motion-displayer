@@ -42,4 +42,4 @@ There is an existing config file `launcher4j_config`.
 
 ## Running Executable
 
-**The executable can only be run on Windows 10 64 bit.** [Clone repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
+**The executable can only be run on Windows 10 64 bit.** You can [download the executable here](https://rhodrithomasmorgan.com/motion_displayer/) otherwise [clone repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
