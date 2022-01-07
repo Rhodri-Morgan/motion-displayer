@@ -16,4 +16,4 @@ In order to create an executable I am using [Launcher4J.](http://launch4j.source
 
 # Status
 
-**The executable can only be run on Windows 10 64 bit.** You can [download the executable here](https://rhodrithomasmorgan.com/motion_displayer/) otherwise [clone repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
+**The executable can only be run on Windows 10 64 bit.** You can [download the executable here](https://rhodrithomasmorgan.com/motion_displayer/) otherwise [clone the repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
