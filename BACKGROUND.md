@@ -4,7 +4,7 @@
 
 Block Matching Algorithms and motion estimation are an important concept that serve an essential purpose for video compression on many video hosting/viewing services on the internet. With this in mind I have decided to create an application that allows the user to visualise the frame-by-frame changes by drawing motion vectors within each macro block of a given video. Users have the ability to modify the search size and block size to their choosing or opt for the standard sizing. User interaction is facilitated by a UI composed of three stages - picking the file, configuring the setting and processing the file. The result is a copy of the original with motion vectors draw on each frame according to their selected configuration and inter-frame changes.  
 
-https://user-images.githubusercontent.com/52254823/142905291-55b3fac1-8f84-4e43-a389-900c894ea776.mp4
+https://user-images.githubusercontent.com/52254823/150772308-401b890d-cb78-406c-a14e-d34b91db53b8.mp4
 
 *See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as example of output. Not embedding due to compression algorithm ruining quality.*
 
