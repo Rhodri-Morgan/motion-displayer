@@ -6,7 +6,9 @@ This project is an implementation of block matching algorithms used in motion es
 
 https://user-images.githubusercontent.com/52254823/150772308-401b890d-cb78-406c-a14e-d34b91db53b8.mp4
 
-*See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as example of output.*
+![bear_out.jpg](documentation_sources/bear_out.jpg)
+
+*Example frame above. See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as full example of output.*
 
 ## Java and Dependencies
 
