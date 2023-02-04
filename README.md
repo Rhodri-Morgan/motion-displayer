@@ -1,8 +1,12 @@
-![Banner Image](documentation_sources/banner.png)
-
 # Motion Displayer Application
 
-*See [BACKGROUND.MD](BACKGROUND.md) for example, motivation, data sources and methodology.*
+## About
+
+This project is an implementation of block matching algorithms used in motion estimation. This application allows users to visualise the inter-frame movement/changes by drawing motion vectors within each macro block of a given video.
+
+https://user-images.githubusercontent.com/52254823/150772308-401b890d-cb78-406c-a14e-d34b91db53b8.mp4
+
+*See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as example of output.*
 
 ## Java and Dependencies
 
