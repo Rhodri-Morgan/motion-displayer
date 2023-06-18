@@ -8,7 +8,7 @@ https://user-images.githubusercontent.com/52254823/150772308-401b890d-cb78-406c-
 
 ![bear_out.jpg](documentation_sources/bear_out.jpg)
 
-*Example frame above. See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as full example of output.*
+_Example frame above. See [`bear_out.mp4`](documentation_sources/bear_out.mp4) as full example of output._
 
 ## Java and Dependencies
 
@@ -22,9 +22,9 @@ This project is using `Gradle 5.0`.
 
 ### Dependencies
 
-* This project requires `OpenCV 4.5.3` for Java. Instructions for setup with Gradle and IDEA can be found [here](https://www.pisciottablog.com/2021/03/02/use-opencv-in-a-gradle-project-using-intellij-idea-community-edition-for-java-in-windows-10/).
+- This project requires `OpenCV 4.5.3` for Java. Instructions for setup with Gradle and IDEA can be found [here](https://www.pisciottablog.com/2021/03/02/use-opencv-in-a-gradle-project-using-intellij-idea-community-edition-for-java-in-windows-10/).
 
-* This project requires `JavaFX 12.0.2`. Instructions for setup with Gradle and IDEA can be found [here](https://openjfx.io/openjfx-docs/#gradle).
+- This project requires `JavaFX 12.0.2`. Instructions for setup with Gradle and IDEA can be found [here](https://openjfx.io/openjfx-docs/#gradle).
 
 ## Building Jar and Exe
 
@@ -48,4 +48,4 @@ There is an existing config file `launcher4j_config`.
 
 ## Running Executable
 
-**The executable can only be run on Windows 10 64 bit.** You can [download the executable here](https://rhodrithomasmorgan.com/motion_displayer/) otherwise [clone the repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
+**The executable can only be run on Windows 10 64 bit.** You can [download the executable here](https://cdn.rhodrimorgan.com/Motion_Displayer.zip) otherwise [clone the repository including git lfs files](JRE_DOWNLOAD.md) and run `Motion Displayer.exe`. Do not delete any files.
